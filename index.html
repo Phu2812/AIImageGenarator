@@ -1,49 +1,11 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prompt Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
             background-color: #1a1a1a;
@@ -70,40 +32,56 @@
         #copy-btn:hover {
             background-color: #16a34a;
         }
+        #error-message {
+            color: #f87171;
+            display: none;
+        }
+        .option-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            max-width: 100%;
+        }
+        .option-row label {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body class="p-8">
     <div class="max-w-4xl mx-auto container p-6 rounded-lg shadow-md">
         <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">Character Prompt Generator</h1>
+        <div id="error-message" class="text-center mb-4"></div>
         
         <form id="prompt-form">
             <!-- Character Info -->
             <div class="mb-6">
                 <h2 class="text-xl font-semibold mb-2 section-title">Character Info</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-4">
                     <div>
-                        <p class="font-medium">Gender</p>
-                        <div id="gender-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Gender</p>
+                        <div id="gender-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Age</p>
-                        <div id="age-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Age</p>
+                        <div id="age-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Hair Color</p>
-                        <div id="hair-color-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Hair Color</p>
+                        <div id="hair-color-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Hair Style</p>
-                        <div id="hair-style-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Hair Style</p>
+                        <div id="hair-style-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Eye Color</p>
-                        <div id="eye-color-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Eye Color</p>
+                        <div id="eye-color-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Body Type</p>
-                        <div id="body-type-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Body Type</p>
+                        <div id="body-type-options" class="option-row"></div>
                     </div>
                 </div>
             </div>
@@ -111,18 +89,18 @@
             <!-- Outfit -->
             <div class="mb-6">
                 <h2 class="text-xl font-semibold mb-2 section-title">Outfit</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-4">
                     <div>
-                        <p class="font-medium">Casual</p>
-                        <div id="casual-outfit-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Casual</p>
+                        <div id="casual-outfit-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Traditional</p>
-                        <div id="traditional-outfit-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Traditional</p>
+                        <div id="traditional-outfit-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Fantasy</p>
-                        <div id="fantasy-outfit-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Fantasy</p>
+                        <div id="fantasy-outfit-options" class="option-row"></div>
                     </div>
                 </div>
             </div>
@@ -130,24 +108,24 @@
             <!-- Pose -->
             <div class="mb-6">
                 <h2 class="text-xl font-semibold mb-2 section-title">Pose</h2>
-                <div id="pose-options" class="space-y-1"></div>
+                <div id="pose-options" class="option-row"></div>
             </div>
 
             <!-- Background -->
             <div class="mb-6">
                 <h2 class="text-xl font-semibold mb-2 section-title">Background</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-4">
                     <div>
-                        <p class="font-medium">Indoor</p>
-                        <div id="indoor-bg-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Indoor</p>
+                        <div id="indoor-bg-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Outdoor</p>
-                        <div id="outdoor-bg-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Outdoor</p>
+                        <div id="outdoor-bg-options" class="option-row"></div>
                     </div>
                     <div>
-                        <p class="font-medium">Fantasy</p>
-                        <div id="fantasy-bg-options" class="space-y-1"></div>
+                        <p class="font-medium mb-1">Fantasy</p>
+                        <div id="fantasy-bg-options" class="option-row"></div>
                     </div>
                 </div>
             </div>
@@ -155,13 +133,13 @@
             <!-- Style -->
             <div class="mb-6">
                 <h2 class="text-xl font-semibold mb-2 section-title">Style</h2>
-                <div id="style-options" class="space-y-1"></div>
+                <div id="style-options" class="option-row"></div>
             </div>
 
             <!-- Quality -->
             <div class="mb-6">
                 <h2 class="text-xl font-semibold mb-2 section-title">Quality and Details</h2>
-                <div id="quality-options" class="space-y-1"></div>
+                <div id="quality-options" class="option-row"></div>
             </div>
 
             <button type="button" id="generate-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Prompt</button>
@@ -173,176 +151,144 @@
         </div>
     </div>
 
-    <script>
-        // Load keywords from JSON
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+            return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+                try {
+                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+
+                    // Convert sheet to JSON to filter blank rows
+                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                    // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                    var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                    // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                    var headerRowIndex = filteredData.findIndex((row, index) =>
+                        row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                    );
+                    // Fallback
+                    if (headerRowIndex === -1 || headerRowIndex > 25) {
+                        headerRowIndex = 0;
+                    }
+
+                    // Convert filtered JSON back to CSV
+                    var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                    csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                    return csv;
+                } catch (e) {
+                    console.error(e);
+                    return "";
+                }
+            }
+            return gk_fileData[filename] || "";
+        }
+
+        // Fallback JSON data
+        const fallbackData = {
+            character: {
+                gender: ["Male", "Female", "Other"],
+                age: ["Child", "Teen", "Adult"],
+                hairColor: ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
+                hairStyle: ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
+                eyeColor: ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
+                bodyType: ["Slim", "Athletic", "Curvy", "Petite"]
+            },
+            outfit: {
+                casual: ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
+                traditional: ["Kimono", "Hanbok", "Cheongsam"],
+                fantasy: ["Armor", "Mage robe", "Cloak"]
+            },
+            pose: ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
+            background: {
+                indoor: ["Bedroom", "Classroom", "Cafe", "Library"],
+                outdoor: ["Park", "Beach", "Forest", "City street", "Market"],
+                fantasy: ["Castle", "Dungeon", "Magic circle"]
+            },
+            style: ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
+            quality: ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
+        };
+
+        // Load keywords from JSON with fallback
         fetch('keywords.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load keywords.json');
+                return response.json();
+            })
             .then(data => {
                 populateOptions(data);
             })
-            .catch(error => console.error('Error loading keywords:', error));
+            .catch(error => {
+                console.error('Error loading keywords:', error);
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('error-message').textContent = 
+                    'Không thể tải keywords.json. Đang sử dụng dữ liệu dự phòng. Vui lòng đảm bảo file keywords.json nằm cùng thư mục với index.html.';
+                populateOptions(fallbackData);
+            });
 
         function populateOptions(data) {
-            // Gender (radio for single select)
-            const genderContainer = document.getElementById('gender-options');
-            data.character.gender.forEach(option => {
-                genderContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="radio" name="gender" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Helper function to create option rows with max 8 items per row
+            function createOptionRow(container, options, name, type = 'checkbox') {
+                container.innerHTML = '';
+                for (let i = 0; i < options.length; i += 8) {
+                    const row = document.createElement('div');
+                    row.className = 'option-row';
+                    options.slice(i, i + 8).forEach(option => {
+                        const label = document.createElement('label');
+                        label.className = 'flex items-center';
+                        label.innerHTML = `
+                            <input type="${type}" name="${name}" value="${option.toLowerCase()}" class="mr-2">
+                            ${option}
+                        `;
+                        row.appendChild(label);
+                    });
+                    container.appendChild(row);
+                }
+            }
 
-            // Age (radio for single select)
-            const ageContainer = document.getElementById('age-options');
-            data.character.age.forEach(option => {
-                ageContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="radio" name="age" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Gender (radio)
+            createOptionRow(document.getElementById('gender-options'), data.character.gender, 'gender', 'radio');
 
-            // Hair Color (checkbox for multi)
-            const hairColorContainer = document.getElementById('hair-color-options');
-            data.character.hairColor.forEach(option => {
-                hairColorContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="hairColor" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Age (radio)
+            createOptionRow(document.getElementById('age-options'), data.character.age, 'age', 'radio');
 
-            // Hair Style (checkbox for multi)
-            const hairStyleContainer = document.getElementById('hair-style-options');
-            data.character.hairStyle.forEach(option => {
-                hairStyleContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="hairStyle" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Hair Color (checkbox)
+            createOptionRow(document.getElementById('hair-color-options'), data.character.hairColor, 'hairColor');
 
-            // Eye Color (checkbox for multi)
-            const eyeColorContainer = document.getElementById('eye-color-options');
-            data.character.eyeColor.forEach(option => {
-                eyeColorContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="eyeColor" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Hair Style (checkbox)
+            createOptionRow(document.getElementById('hair-style-options'), data.character.hairStyle, 'hairStyle');
 
-            // Body Type (checkbox for multi)
-            const bodyTypeContainer = document.getElementById('body-type-options');
-            data.character.bodyType.forEach(option => {
-                bodyTypeContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="bodyType" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Eye Color (checkbox)
+            createOptionRow(document.getElementById('eye-color-options'), data.character.eyeColor, 'eyeColor');
+
+            // Body Type (checkbox)
+            createOptionRow(document.getElementById('body-type-options'), data.character.bodyType, 'bodyType');
 
             // Outfits
-            const casualOutfitContainer = document.getElementById('casual-outfit-options');
-            data.outfit.casual.forEach(option => {
-                casualOutfitContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="outfit" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            createOptionRow(document.getElementById('casual-outfit-options'), data.outfit.casual, 'outfit');
+            createOptionRow(document.getElementById('traditional-outfit-options'), data.outfit.traditional, 'outfit');
+            createOptionRow(document.getElementById('fantasy-outfit-options'), data.outfit.fantasy, 'outfit');
 
-            const traditionalOutfitContainer = document.getElementById('traditional-outfit-options');
-            data.outfit.traditional.forEach(option => {
-                traditionalOutfitContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="outfit" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
-
-            const fantasyOutfitContainer = document.getElementById('fantasy-outfit-options');
-            data.outfit.fantasy.forEach(option => {
-                fantasyOutfitContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="outfit" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
-
-            // Pose (checkbox for multi)
-            const poseContainer = document.getElementById('pose-options');
-            data.pose.forEach(option => {
-                poseContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="pose" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Pose (checkbox)
+            createOptionRow(document.getElementById('pose-options'), data.pose, 'pose');
 
             // Backgrounds
-            const indoorBgContainer = document.getElementById('indoor-bg-options');
-            data.background.indoor.forEach(option => {
-                indoorBgContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="background" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            createOptionRow(document.getElementById('indoor-bg-options'), data.background.indoor, 'background');
+            createOptionRow(document.getElementById('outdoor-bg-options'), data.background.outdoor, 'background');
+            createOptionRow(document.getElementById('fantasy-bg-options'), data.background.fantasy, 'background');
 
-            const outdoorBgContainer = document.getElementById('outdoor-bg-options');
-            data.background.outdoor.forEach(option => {
-                outdoorBgContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="background" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Style (checkbox)
+            createOptionRow(document.getElementById('style-options'), data.style, 'style');
 
-            const fantasyBgContainer = document.getElementById('fantasy-bg-options');
-            data.background.fantasy.forEach(option => {
-                fantasyBgContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="background" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
-
-            // Style (checkbox for multi)
-            const styleContainer = document.getElementById('style-options');
-            data.style.forEach(option => {
-                styleContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="style" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
-
-            // Quality (checkbox for multi)
-            const qualityContainer = document.getElementById('quality-options');
-            data.quality.forEach(option => {
-                qualityContainer.innerHTML += `
-                    <label class="flex items-center">
-                        <input type="checkbox" name="quality" value="${option.toLowerCase()}" class="mr-2">
-                        ${option}
-                    </label>
-                `;
-            });
+            // Quality (checkbox)
+            createOptionRow(document.getElementById('quality-options'), data.quality, 'quality');
         }
 
         // Generate Prompt
