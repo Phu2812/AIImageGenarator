@@ -1,23 +1,82 @@
 {
     "character": {
-        "gender": ["Male", "Female", "Other"],
-        "age": ["Child", "Teen", "Adult"],
-        "hairColor": ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
-        "hairStyle": ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
-        "eyeColor": ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
-        "bodyType": ["Slim", "Athletic", "Curvy", "Petite"]
+        "gender": ["Female", "Male", "Futanari", "Trap", "Shemale", "Androgynous"],
+        "age": ["Teen", "Adult", "MILF", "Loli", "Mature", "Elder"],
+        "hairColor": ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink", "White", "Purple", "Orange", "Multicolored"],
+        "hairStyle": [
+            "Long straight hair", "Long wavy hair", "Ponytail", "High ponytail", "Low ponytail",
+            "Twin tails", "Messy hair", "Short bob", "Wolf cut", "Pixie cut", "Hime cut", "Curly hair", "Bed hair", "Braided hair", "Side ponytail"
+        ],
+        "eyeColor": ["Black", "Brown", "Blue", "Green", "Amber", "Red", "Purple", "Yellow", "Heterochromia"],
+        "bodyType": ["Petite", "Slim", "Athletic", "Curvy", "Busty", "Voluptuous", "Chubby", "Thick thighs", "Pear-shaped", "Hourglass"],
+        "breastSize": ["Flat chest", "Small breasts", "Medium breasts", "Large breasts", "Huge breasts", "Gigantic breasts"],
+        "buttSize": ["Small butt", "Average butt", "Bubble butt", "Large butt", "Huge butt"],
+        "face": ["Cute face", "Mature face", "Youthful face", "Seductive look", "Blushing", "Smiling", "Licking lips", "Half-open mouth", "Ahegao face"]
     },
     "outfit": {
-        "casual": ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
-        "traditional": ["Kimono", "Hanbok", "Cheongsam"],
-        "fantasy": ["Armor", "Mage robe", "Cloak"]
+        "casual": [
+            "Open shirt", "See-through top", "Unbuttoned blouse", "Mini skirt", "Short shorts",
+            "Crop top", "Loose T-shirt", "Wet clothing", "Tank top", "School uniform (modified)", "Torn clothes"
+        ],
+        "traditional": [
+            "Loose kimono", "Partially removed yukata", "Cheongsam with high slit", "Hanbok open chest", "Miko outfit (revealing)"
+        ],
+        "fantasy": [
+            "Bikini armor", "Lewd mage robe", "Bondage harness", "Succubus outfit", "Nude cape", "Chains and cuffs", "Battle-damaged armor"
+        ],
+        "fetish": [
+            "Latex suit", "Leather harness", "Fishnet bodysuit", "Garter belt and stockings",
+            "BDSM gear", "Choker with leash", "Crotchless panties", "Pasties", "Open cup bra", "String bikini", "Micro bikini", "Body paint"
+        ]
     },
-    "pose": ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
+    "pose": {
+        "standing": [
+            "Standing", "Hands on hips", "Crossed arms", "One leg bent", "Leaning forward", "Back turned", "Looking over shoulder", "Stretching arms up"
+        ],
+        "sitting": [
+            "Sitting cross-legged", "Sitting on knees", "Sitting with legs open", "Sitting against wall",
+            "Side sitting", "Perching on edge", "Lap sitting", "Straddling chair"
+        ],
+        "lying": [
+            "Lying on back", "Lying on stomach", "Lying on side", "Arch back", "Rolling over", "Sprawled out", "Upside down pose"
+        ],
+        "nsfw": [
+            "Spread legs", "Bent over", "On all fours", "Doggy style position", "Missionary position", "Cowgirl position", "Reverse cowgirl position",
+            "Fingering", "Grinding", "Handjob pose", "Oral pose", "Pinned down", "Spreading ass cheeks", "Tied up position", "Against wall sex pose"
+        ]
+    },
     "background": {
-        "indoor": ["Bedroom", "Classroom", "Cafe", "Library"],
-        "outdoor": ["Park", "Beach", "Forest", "City street", "Market"],
-        "fantasy": ["Castle", "Dungeon", "Magic circle"]
+        "indoor": [
+            "Bedroom", "Bathroom", "Locker room", "Love hotel", "Office desk", "Classroom (empty)",
+            "Shower room", "Changing room", "Tatami room", "Dungeon cell"
+        ],
+        "outdoor": [
+            "Beach at night", "Forest clearing", "Alleyway", "Rooftop", "Hot spring", "Garden at night", "Abandoned building", "Balcony"
+        ],
+        "fantasy": [
+            "Magic ritual room", "Succubus lair", "Dark throne room", "Dungeon torture chamber", "Enchanted forest", "Portal chamber"
+        ]
     },
-    "style": ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
-    "quality": ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
+    "genre": {
+        "basic": [
+            "Vanilla sex", "Oral sex", "Handjob", "Footjob", "Titjob", "Masturbation", "Cunnilingus", "Anal sex", "Cumshot", "Facial", "Creampie"
+        ],
+        "fetish": [
+            "BDSM", "Bondage", "Shibari", "Gagged", "Blindfold", "Collar", "Public sex", "Exhibitionism", "Voyeurism", "Pet play", "Lactation", "Impregnation"
+        ],
+        "fantasy": [
+            "Monster girl", "Tentacle sex", "Succubus", "Incubus", "Elf sex", "Catgirl", "Vampire sex", "Werewolf sex", "Slime girl"
+        ],
+        "story": [
+            "NTR", "Netori", "Cheating", "Gangbang", "Threesome", "Orgy", "Age gap", "Dirty old man", "Teacher-student", "Boss-subordinate"
+        ]
+    },
+    "style": [
+        "Lewd anime", "Hentai style", "Ecchi shading", "Soft erotic lighting", "Doujin sketch",
+        "Ultra detailed hentai", "Manga-style screentone", "Watercolor erotic", "Pixel hentai", "3D hentai render"
+    ],
+    "quality": [
+        "High quality", "Ultra detailed", "Soft lighting", "Glossy skin", "Detailed body", "Perfect anatomy",
+        "Realistic skin texture", "Subsurface scattering", "Cinematic lighting", "Depth of field blur"
+    ]
 }
