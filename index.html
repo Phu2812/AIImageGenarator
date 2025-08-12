@@ -1,279 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prompt Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        body {
-            background-color: #1a1a1a;
-            color: #e5e7eb;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      body {
+        background-color: #1a1a1a;
+        color: #e5e7eb;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .container {
+        background-color: #2d2d2d;
+        border: 1px solid #4b5563;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .section-title {
+        color: #60a5fa;
+      }
+
+      input[type="radio"],
+      input[type="checkbox"] {
+        accent-color: #60a5fa;
+      }
+
+      textarea,
+      button {
+        background-color: #374151;
+        color: #e5e7eb;
+        border: 1px solid #4b5563;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #2563eb;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.5);
+      }
+
+      #copy-btn:hover {
+        background-color: #16a34a;
+        box-shadow: 0 2px 4px rgba(22, 163, 74, 0.5);
+      }
+
+      #error-message {
+        color: #f87171;
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
         }
-        .container {
-            background-color: #2d2d2d;
-            border: 1px solid #4b5563;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .section-title {
-            color: #60a5fa;
-        }
-        input[type="radio"], input[type="checkbox"] {
-            accent-color: #60a5fa;
-        }
-        textarea, button {
-            background-color: #374151;
-            color: #e5e7eb;
-            border: 1px solid #4b5563;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            background-color: #2563eb;
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.5);
-        }
-        #copy-btn:hover {
-            background-color: #16a34a;
-            box-shadow: 0 2px 4px rgba(22, 163, 74, 0.5);
-        }
-        #error-message {
-            color: #f87171;
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .option-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            max-width: 100%;
-        }
-        .option-row label {
-            display: flex;
-            align-items: center;
-            max-width: 100%;
-            padding: 0.5rem;
-            border-radius: 4px;
-            transition: background 0.2s ease;
-            cursor: pointer;
-        }
-        .option-row label:hover {
-            background-color: #374151;
-        }
-        .option-row label span {
-            white-space: normal;
-            word-wrap: break-word;
-            max-width: calc(100% - 1.5rem);
-        }
-        .option-row label input {
-            flex-shrink: 0;
-            margin-right: 0.5rem;
-        }
+      }
+
+      .option-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5rem;
+        max-width: 100%;
+      }
+
+      .option-row label {
+        display: flex;
+        align-items: center;
+        max-width: 100%;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: background 0.2s ease;
+        cursor: pointer;
+      }
+
+      .option-row label:hover {
+        background-color: #374151;
+      }
+
+      .option-row label span {
+        white-space: normal;
+        word-wrap: break-word;
+        max-width: calc(100% - 1.5rem);
+      }
+
+      .option-row label input {
+        flex-shrink: 0;
+        margin-right: 0.5rem;
+      }
     </style>
-</head>
-<body class="p-8">
+  </head>
+  <body class="p-8">
     <div class="max-w-4xl mx-auto container p-6 rounded-lg shadow-md">
-        <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">Character Prompt Generator</h1>
-        <div id="error-message" class="text-center mb-4"></div>
-        
-        <form id="prompt-form">
-            <div id="dynamic-sections" class="space-y-6"></div>
-            <button type="button" id="generate-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Prompt</button>
-        </form>
-
-        <div class="mt-6">
-            <textarea id="prompt-output" class="w-full h-32 p-2 rounded" readonly></textarea>
-            <button id="copy-btn" class="mt-2 bg-green-600 text-white px-4 py-2 rounded">Copy Prompt</button>
-        </div>
+      <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">Character Prompt Generator</h1>
+      <div id="error-message" class="text-center mb-4"></div>
+      <form id="prompt-form">
+        <div id="dynamic-sections" class="space-y-6"></div>
+        <button type="button" id="generate-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Prompt</button>
+      </form>
+      <div class="mt-6">
+        <textarea id="prompt-output" class="w-full h-32 p-2 rounded" readonly></textarea>
+        <button id="copy-btn" class="mt-2 bg-green-600 text-white px-4 py-2 rounded">Copy Prompt</button>
+      </div>
     </div>
-
     <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-            return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-                try {
-                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                    var firstSheetName = workbook.SheetNames[0];
-                    var worksheet = workbook.Sheets[firstSheetName];
-                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                    var filteredData = jsonData.filter(row => row.some(filledCell));
-                    var headerRowIndex = filteredData.findIndex((row, index) =>
-                        row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                    );
-                    if (headerRowIndex === -1 || headerRowIndex > 25) {
-                        headerRowIndex = 0;
-                    }
-                    var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-                    csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                    return csv;
-                } catch (e) {
-                    console.error(e);
-                    return "";
-                }
-            }
-            return gk_fileData[filename] || "";
-        }
+      var gk_isXlsx = false;
+      var gk_xlsxFileLookup = {};
+      var gk_fileData = {};
 
-        // Fallback JSON data
-        const fallbackData = {
-            character: {
-                gender: ["Male", "Female", "Other"],
-                age: ["Child", "Teen", "Adult"],
-                hairColor: ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
-                hairStyle: ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
-                eyeColor: ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
-                bodyType: ["Slim", "Athletic", "Curvy", "Petite"]
-            },
-            outfit: {
-                casual: ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
-                traditional: ["Kimono", "Hanbok", "Cheongsam"],
-                fantasy: ["Armor", "Mage robe", "Cloak"]
-            },
-            pose: ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
-            background: {
-                indoor: ["Bedroom", "Classroom", "Cafe", "Library"],
-                outdoor: ["Park", "Beach", "Forest", "City street", "Market"],
-                fantasy: ["Castle", "Dungeon", "Magic circle"]
-            },
-            style: ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
-            quality: ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
-        };
+      function filledCell(cell) {
+        return cell !== '' && cell != null;
+      }
 
-        // Load keywords from JSON with fallback
-        fetch('keywords.json')
-            .then(response => {
-                if (!response.ok) throw new Error('Không thể tải keywords.json');
-                return response.json();
-            })
-            .then(data => {
-                populateOptions(data);
-            })
-            .catch(error => {
-                console.error('Error loading keywords:', error);
-                document.getElementById('error-message').style.display = 'block';
-                document.getElementById('error-message').textContent = 
-                    'Không thể tải keywords.json. Đang sử dụng dữ liệu dự phòng. Vui lòng đảm bảo file keywords.json nằm cùng thư mục với index.html.';
-                populateOptions(fallbackData);
+      function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+          try {
+            var workbook = XLSX.read(gk_fileData[filename], {
+              type: 'base64'
             });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, {
+              header: 1,
+              blankrows: false,
+              defval: ''
+            });
+            var filteredData = jsonData.filter(row => row.some(filledCell));
+            var headerRowIndex = filteredData.findIndex((row, index) => row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length);
+            if (headerRowIndex === -1 || headerRowIndex > 25) {
+              headerRowIndex = 0;
+            }
+            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+            csv = XLSX.utils.sheet_to_csv(csv, {
+              header: 1
+            });
+            return csv;
+          } catch (e) {
+            console.error(e);
+            return "";
+          }
+        }
+        return gk_fileData[filename] || "";
+      }
+      // Fallback JSON data
+      const fallbackData = {
+        character: {
+          gender: ["Male", "Female", "Other"],
+          age: ["Child", "Teen", "Adult"],
+          hairColor: ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
+          hairStyle: ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
+          eyeColor: ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
+          bodyType: ["Slim", "Athletic", "Curvy", "Petite"]
+        },
+        outfit: {
+          casual: ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
+          traditional: ["Kimono", "Hanbok", "Cheongsam"],
+          fantasy: ["Armor", "Mage robe", "Cloak"]
+        },
+        pose: ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
+        background: {
+          indoor: ["Bedroom", "Classroom", "Cafe", "Library"],
+          outdoor: ["Park", "Beach", "Forest", "City street", "Market"],
+          fantasy: ["Castle", "Dungeon", "Magic circle"]
+        },
+        style: ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
+        quality: ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
+      };
+      // Load keywords from JSON with fallback
+      fetch('keywords.json').then(response => {
+        if (!response.ok) throw new Error('Không thể tải keywords.json');
+        return response.json();
+      }).then(data => {
+        populateOptions(data);
+      }).catch(error => {
+        console.error('Error loading keywords:', error);
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('error-message').textContent = 'Không thể tải keywords.json. Đang sử dụng dữ liệu dự phòng. Vui lòng đảm bảo file keywords.json nằm cùng thư mục với index.html.';
+        populateOptions(fallbackData);
+      });
 
-        function populateOptions(data) {
-            const sectionsContainer = document.getElementById('dynamic-sections');
-            sectionsContainer.innerHTML = '';
-
-            // Helper function to create option rows with max 8 items per row
-            function createOptionRow(options, name, type = 'checkbox') {
-                const container = document.createElement('div');
-                for (let i = 0; i < options.length; i += 8) {
-                    const row = document.createElement('div');
-                    row.className = 'option-row';
-                    options.slice(i, i + 8).forEach(option => {
-                        const label = document.createElement('label');
-                        label.className = 'flex items-center';
-                        label.innerHTML = `
-                            <input type="${type}" name="${name}" value="${option.toLowerCase()}" class="mr-2">
-                            <span>${option}</span>
+      function populateOptions(data) {
+        const sectionsContainer = document.getElementById('dynamic-sections');
+        sectionsContainer.innerHTML = '';
+        // Helper function to create option rows with max 8 items per row
+        function createOptionRow(options, name, type = 'checkbox') {
+          const container = document.createElement('div');
+          for (let i = 0; i < options.length; i += 8) {
+            const row = document.createElement('div');
+            row.className = 'option-row';
+            options.slice(i, i + 8).forEach(option => {
+              const label = document.createElement('label');
+              label.className = 'flex items-center';
+              label.innerHTML = `
+                            
+					
+					<input type="${type}" name="${name}" value="${option.toLowerCase()}" class="mr-2">
+						<span>${option}</span>
                         `;
-                        row.appendChild(label);
-                    });
-                    container.appendChild(row);
-                }
-                return container;
-            }
-
-            // Generate sections dynamically
-            Object.keys(data).forEach(sectionKey => {
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'mb-6';
-                
-                const sectionTitle = document.createElement('h2');
-                sectionTitle.className = 'text-xl font-semibold mb-2 section-title';
-                sectionTitle.textContent = sectionKey.charAt(0).toUpperCase() + sectionKey.slice(1);
-                sectionDiv.appendChild(sectionTitle);
-
-                const sectionContent = document.createElement('div');
-                sectionContent.className = 'space-y-4';
-
-                const sectionData = data[sectionKey];
-                if (Array.isArray(sectionData)) {
-                    sectionContent.appendChild(createOptionRow(sectionData, sectionKey));
-                } else {
-                    Object.keys(sectionData).forEach(subKey => {
-                        const subDiv = document.createElement('div');
-                        const subTitle = document.createElement('p');
-                        subTitle.className = 'font-medium mb-1';
-                        subTitle.textContent = subKey.charAt(0).toUpperCase() + subKey.slice(1);
-                        subDiv.appendChild(subTitle);
-                        subDiv.appendChild(createOptionRow(sectionData[subKey], subKey, sectionKey === 'character' && ['gender', 'age'].includes(subKey) ? 'radio' : 'checkbox'));
-                        sectionContent.appendChild(subDiv);
-                    });
-                }
-
-                sectionDiv.appendChild(sectionContent);
-                sectionsContainer.appendChild(sectionDiv);
+              row.appendChild(label);
             });
+            container.appendChild(row);
+          }
+          return container;
         }
-
-        // Generate Prompt
-        document.getElementById('generate-btn').addEventListener('click', () => {
-            let prompt = 'A';
-
-            // Collect all checked inputs
-            const allInputs = document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
-            const sections = {};
-
-            allInputs.forEach(input => {
-                const section = input.name;
-                if (!sections[section]) sections[section] = [];
-                sections[section].push(input.value);
+        // Generate sections dynamically
+        Object.keys(data).forEach(sectionKey => {
+          const sectionDiv = document.createElement('div');
+          sectionDiv.className = 'mb-6';
+          const sectionTitle = document.createElement('h2');
+          sectionTitle.className = 'text-xl font-semibold mb-2 section-title';
+          sectionTitle.textContent = sectionKey.charAt(0).toUpperCase() + sectionKey.slice(1);
+          sectionDiv.appendChild(sectionTitle);
+          const sectionContent = document.createElement('div');
+          sectionContent.className = 'space-y-4';
+          const sectionData = data[sectionKey];
+          if (Array.isArray(sectionData)) {
+            sectionContent.appendChild(createOptionRow(sectionData, sectionKey));
+          } else {
+            Object.keys(sectionData).forEach(subKey => {
+              const subDiv = document.createElement('div');
+              const subTitle = document.createElement('p');
+              subTitle.className = 'font-medium mb-1';
+              subTitle.textContent = subKey.charAt(0).toUpperCase() + subKey.slice(1);
+              subDiv.appendChild(subTitle);
+              subDiv.appendChild(createOptionRow(sectionData[subKey], subKey, sectionKey === 'character' && ['gender', 'age'].includes(subKey) ? 'radio' : 'checkbox'));
+              sectionContent.appendChild(subDiv);
             });
-
-            // Build prompt based on selections
-            Object.keys(sections).forEach(section => {
-                if (['gender', 'age'].includes(section)) {
-                    if (sections[section].length > 0) prompt += ` ${sections[section][0]}`;
-                } else if (section === 'hairColor') {
-                    if (sections[section].length > 0) prompt += ` with ${sections[section].join(' and ')} hair`;
-                } else if (section === 'hairStyle') {
-                    if (sections[section].length > 0) prompt += ` ${sections[section].join(' ')}`;
-                } else if (section === 'eyeColor') {
-                    if (sections[section].length > 0) prompt += `, ${sections[section].join(' and ')} eyes`;
-                } else if (section === 'bodyType') {
-                    if (sections[section].length > 0) prompt += `, ${sections[section].join(' ')} body`;
-                } else if (['casual', 'traditional', 'fantasy'].includes(section)) {
-                    if (sections[section].length > 0) prompt += `, wearing ${sections[section].join(' and ')}`;
-                } else if (section === 'pose') {
-                    if (sections[section].length > 0) prompt += `, ${sections[section].join(', ')}`;
-                } else if (['indoor', 'outdoor', 'fantasy'].includes(section)) {
-                    if (sections[section].length > 0) prompt += ` in ${sections[section].join(' and ')}`;
-                } else if (section === 'style') {
-                    if (sections[section].length > 0) prompt += `, ${sections[section].join(' ')} style`;
-                } else if (section === 'quality') {
-                    if (sections[section].length > 0) prompt += `, ${sections[section].join(', ')}`;
-                }
-            });
-
-            // Output
-            document.getElementById('prompt-output').value = prompt.trim() + '.';
+          }
+          sectionDiv.appendChild(sectionContent);
+          sectionsContainer.appendChild(sectionDiv);
         });
-
-        // Copy Prompt
-        document.getElementById('copy-btn').addEventListener('click', () => {
-            const textarea = document.getElementById('prompt-output');
-            textarea.select();
-            document.execCommand('copy');
-            alert('Prompt copied to clipboard!');
+      }
+      // Generate Prompt (NSFW)
+      document.getElementById('generate-btn').addEventListener('click', () => {
+        let promptParts = [];
+        const allInputs = document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
+        const sections = {};
+        // Gom các lựa chọn vào section
+        allInputs.forEach(input => {
+          const section = input.name;
+          if (!sections[section]) sections[section] = [];
+          sections[section].push(input.value);
         });
+        // Nối toàn bộ theo đúng thứ tự section
+        Object.keys(sections).forEach(section => {
+          promptParts.push(...sections[section]);
+        });
+        // Ghép prompt thành chuỗi (dùng dấu phẩy)
+        let prompt = promptParts.join(', ');
+        // Output
+        document.getElementById('prompt-output').value = prompt.trim();
+      });
+      // Copy Prompt
+      document.getElementById('copy-btn').addEventListener('click', () => {
+        const textarea = document.getElementById('prompt-output');
+        textarea.select();
+        document.execCommand('copy');
+        alert('Prompt copied to clipboard!');
+      });
     </script>
-</body>
+  </body>
 </html>
