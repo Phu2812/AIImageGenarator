@@ -10,10 +10,13 @@
         body {
             background-color: #1a1a1a;
             color: #e5e7eb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .container {
             background-color: #2d2d2d;
             border: 1px solid #4b5563;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
         .section-title {
             color: #60a5fa;
@@ -25,27 +28,52 @@
             background-color: #374151;
             color: #e5e7eb;
             border: 1px solid #4b5563;
+            border-radius: 4px;
+            transition: all 0.3s ease;
         }
         button:hover {
             background-color: #2563eb;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.5);
         }
         #copy-btn:hover {
             background-color: #16a34a;
+            box-shadow: 0 2px 4px rgba(22, 163, 74, 0.5);
         }
         #error-message {
             color: #f87171;
             display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .option-row {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
             max-width: 100%;
         }
         .option-row label {
             display: flex;
             align-items: center;
-            white-space: nowrap;
+            max-width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+            cursor: pointer;
+        }
+        .option-row label:hover {
+            background-color: #374151;
+        }
+        .option-row label span {
+            white-space: normal;
+            word-wrap: break-word;
+            max-width: calc(100% - 1.5rem);
+        }
+        .option-row label input {
+            flex-shrink: 0;
+            margin-right: 0.5rem;
         }
     </style>
 </head>
@@ -154,7 +182,7 @@
                         label.className = 'flex items-center';
                         label.innerHTML = `
                             <input type="${type}" name="${name}" value="${option.toLowerCase()}" class="mr-2">
-                            ${option}
+                            <span>${option}</span>
                         `;
                         row.appendChild(label);
                     });
@@ -178,10 +206,8 @@
 
                 const sectionData = data[sectionKey];
                 if (Array.isArray(sectionData)) {
-                    // Direct array (e.g., pose, style, quality)
                     sectionContent.appendChild(createOptionRow(sectionData, sectionKey));
                 } else {
-                    // Object with subcategories (e.g., character, outfit, background)
                     Object.keys(sectionData).forEach(subKey => {
                         const subDiv = document.createElement('div');
                         const subTitle = document.createElement('p');
