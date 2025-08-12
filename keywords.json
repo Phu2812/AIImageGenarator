@@ -1,0 +1,23 @@
+{
+    "character": {
+        "gender": ["Male", "Female", "Other"],
+        "age": ["Child", "Teen", "Adult"],
+        "hairColor": ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
+        "hairStyle": ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
+        "eyeColor": ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
+        "bodyType": ["Slim", "Athletic", "Curvy", "Petite"]
+    },
+    "outfit": {
+        "casual": ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
+        "traditional": ["Kimono", "Hanbok", "Cheongsam"],
+        "fantasy": ["Armor", "Mage robe", "Cloak"]
+    },
+    "pose": ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
+    "background": {
+        "indoor": ["Bedroom", "Classroom", "Cafe", "Library"],
+        "outdoor": ["Park", "Beach", "Forest", "City street", "Market"],
+        "fantasy": ["Castle", "Dungeon", "Magic circle"]
+    },
+    "style": ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
+    "quality": ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
+}
