@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
+
+
+
+    
+    
+    Prompt Generator
+    
+    
+    
         body {
             background-color: #1a1a1a;
             color: #e5e7eb;
@@ -47,306 +47,306 @@
             align-items: center;
             white-space: nowrap;
         }
-    </style>
-</head>
-<body class="p-8">
-    <div class="max-w-4xl mx-auto container p-6 rounded-lg shadow-md">
-        <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">Character Prompt Generator</h1>
-        <div id="error-message" class="text-center mb-4"></div>
+    
+
+
+    
+        Character Prompt Generator
         
-        <form id="prompt-form">
-            <!-- Character Info -->
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 section-title">Character Info</h2>
-                <div class="space-y-4">
-                    <div>
-                        <p class="font-medium mb-1">Gender</p>
-                        <div id="gender-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Age</p>
-                        <div id="age-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Hair Color</p>
-                        <div id="hair-color-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Hair Style</p>
-                        <div id="hair-style-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Eye Color</p>
-                        <div id="eye-color-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Body Type</p>
-                        <div id="body-type-options" class="option-row"></div>
-                    </div>
+        
+    <form id="prompt-form">
+        <!-- Character Info -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 section-title">Character Info</h2>
+            <div class="space-y-4">
+                <div>
+                    <p class="font-medium mb-1">Gender</p>
+                    <div id="gender-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Age</p>
+                    <div id="age-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Hair Color</p>
+                    <div id="hair-color-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Hair Style</p>
+                    <div id="hair-style-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Eye Color</p>
+                    <div id="eye-color-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Body Type</p>
+                    <div id="body-type-options" class="option-row"></div>
                 </div>
             </div>
-
-            <!-- Outfit -->
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 section-title">Outfit</h2>
-                <div class="space-y-4">
-                    <div>
-                        <p class="font-medium mb-1">Casual</p>
-                        <div id="casual-outfit-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Traditional</p>
-                        <div id="traditional-outfit-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Fantasy</p>
-                        <div id="fantasy-outfit-options" class="option-row"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pose -->
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 section-title">Pose</h2>
-                <div id="pose-options" class="option-row"></div>
-            </div>
-
-            <!-- Background -->
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 section-title">Background</h2>
-                <div class="space-y-4">
-                    <div>
-                        <p class="font-medium mb-1">Indoor</p>
-                        <div id="indoor-bg-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Outdoor</p>
-                        <div id="outdoor-bg-options" class="option-row"></div>
-                    </div>
-                    <div>
-                        <p class="font-medium mb-1">Fantasy</p>
-                        <div id="fantasy-bg-options" class="option-row"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Style -->
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 section-title">Style</h2>
-                <div id="style-options" class="option-row"></div>
-            </div>
-
-            <!-- Quality -->
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 section-title">Quality and Details</h2>
-                <div id="quality-options" class="option-row"></div>
-            </div>
-
-            <button type="button" id="generate-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Prompt</button>
-        </form>
-
-        <div class="mt-6">
-            <textarea id="prompt-output" class="w-full h-32 p-2 rounded" readonly></textarea>
-            <button id="copy-btn" class="mt-2 bg-green-600 text-white px-4 py-2 rounded">Copy Prompt</button>
         </div>
+
+        <!-- Outfit -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 section-title">Outfit</h2>
+            <div class="space-y-4">
+                <div>
+                    <p class="font-medium mb-1">Casual</p>
+                    <div id="casual-outfit-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Traditional</p>
+                    <div id="traditional-outfit-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Fantasy</p>
+                    <div id="fantasy-outfit-options" class="option-row"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pose -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 section-title">Pose</h2>
+            <div id="pose-options" class="option-row"></div>
+        </div>
+
+        <!-- Background -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 section-title">Background</h2>
+            <div class="space-y-4">
+                <div>
+                    <p class="font-medium mb-1">Indoor</p>
+                    <div id="indoor-bg-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Outdoor</p>
+                    <div id="outdoor-bg-options" class="option-row"></div>
+                </div>
+                <div>
+                    <p class="font-medium mb-1">Fantasy</p>
+                    <div id="fantasy-bg-options" class="option-row"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Style -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 section-title">Style</h2>
+            <div id="style-options" class="option-row"></div>
+        </div>
+
+        <!-- Quality -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 section-title">Quality and Details</h2>
+            <div id="quality-options" class="option-row"></div>
+        </div>
+
+        <button type="button" id="generate-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Prompt</button>
+    </form>
+
+    <div class="mt-6">
+        <textarea id="prompt-output" class="w-full h-32 p-2 rounded" readonly></textarea>
+        <button id="copy-btn" class="mt-2 bg-green-600 text-white px-4 py-2 rounded">Copy Prompt</button>
     </div>
+</div>
 
-    <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-            return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-                try {
-                    var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                    var firstSheetName = workbook.SheetNames[0];
-                    var worksheet = workbook.Sheets[firstSheetName];
+<script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+        return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
 
-                    // Convert sheet to JSON to filter blank rows
-                    var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                    // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                    var filteredData = jsonData.filter(row => row.some(filledCell));
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
 
-                    // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                    var headerRowIndex = filteredData.findIndex((row, index) =>
-                        row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                    );
-                    // Fallback
-                    if (headerRowIndex === -1 || headerRowIndex > 25) {
-                        headerRowIndex = 0;
-                    }
-
-                    // Convert filtered JSON back to CSV
-                    var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-                    csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                    return csv;
-                } catch (e) {
-                    console.error(e);
-                    return "";
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                    row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                    headerRowIndex = 0;
                 }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
             }
-            return gk_fileData[filename] || "";
         }
+        return gk_fileData[filename] || "";
+    }
 
-        // Fallback JSON data
-        const fallbackData = {
-            character: {
-                gender: ["Male", "Female", "Other"],
-                age: ["Child", "Teen", "Adult"],
-                hairColor: ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
-                hairStyle: ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
-                eyeColor: ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
-                bodyType: ["Slim", "Athletic", "Curvy", "Petite"]
-            },
-            outfit: {
-                casual: ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
-                traditional: ["Kimono", "Hanbok", "Cheongsam"],
-                fantasy: ["Armor", "Mage robe", "Cloak"]
-            },
-            pose: ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
-            background: {
-                indoor: ["Bedroom", "Classroom", "Cafe", "Library"],
-                outdoor: ["Park", "Beach", "Forest", "City street", "Market"],
-                fantasy: ["Castle", "Dungeon", "Magic circle"]
-            },
-            style: ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
-            quality: ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
-        };
+    // Fallback JSON data
+    const fallbackData = {
+        character: {
+            gender: ["Male", "Female", "Other"],
+            age: ["Child", "Teen", "Adult"],
+            hairColor: ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
+            hairStyle: ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
+            eyeColor: ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
+            bodyType: ["Slim", "Athletic", "Curvy", "Petite"]
+        },
+        outfit: {
+            casual: ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
+            traditional: ["Kimono", "Hanbok", "Cheongsam"],
+            fantasy: ["Armor", "Mage robe", "Cloak"]
+        },
+        pose: ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
+        background: {
+            indoor: ["Bedroom", "Classroom", "Cafe", "Library"],
+            outdoor: ["Park", "Beach", "Forest", "City street", "Market"],
+            fantasy: ["Castle", "Dungeon", "Magic circle"]
+        },
+        style: ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
+        quality: ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
+    };
 
-        // Load keywords from JSON with fallback
-        fetch('keywords.json')
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load keywords.json');
-                return response.json();
-            })
-            .then(data => {
-                populateOptions(data);
-            })
-            .catch(error => {
-                console.error('Error loading keywords:', error);
-                document.getElementById('error-message').style.display = 'block';
-                document.getElementById('error-message').textContent = 
-                    'Không thể tải keywords.json. Đang sử dụng dữ liệu dự phòng. Vui lòng đảm bảo file keywords.json nằm cùng thư mục với index.html.';
-                populateOptions(fallbackData);
-            });
-
-        function populateOptions(data) {
-            // Helper function to create option rows with max 8 items per row
-            function createOptionRow(container, options, name, type = 'checkbox') {
-                container.innerHTML = '';
-                for (let i = 0; i < options.length; i += 8) {
-                    const row = document.createElement('div');
-                    row.className = 'option-row';
-                    options.slice(i, i + 8).forEach(option => {
-                        const label = document.createElement('label');
-                        label.className = 'flex items-center';
-                        label.innerHTML = `
-                            <input type="${type}" name="${name}" value="${option.toLowerCase()}" class="mr-2">
-                            ${option}
-                        `;
-                        row.appendChild(label);
-                    });
-                    container.appendChild(row);
-                }
-            }
-
-            // Gender (radio)
-            createOptionRow(document.getElementById('gender-options'), data.character.gender, 'gender', 'radio');
-
-            // Age (radio)
-            createOptionRow(document.getElementById('age-options'), data.character.age, 'age', 'radio');
-
-            // Hair Color (checkbox)
-            createOptionRow(document.getElementById('hair-color-options'), data.character.hairColor, 'hairColor');
-
-            // Hair Style (checkbox)
-            createOptionRow(document.getElementById('hair-style-options'), data.character.hairStyle, 'hairStyle');
-
-            // Eye Color (checkbox)
-            createOptionRow(document.getElementById('eye-color-options'), data.character.eyeColor, 'eyeColor');
-
-            // Body Type (checkbox)
-            createOptionRow(document.getElementById('body-type-options'), data.character.bodyType, 'bodyType');
-
-            // Outfits
-            createOptionRow(document.getElementById('casual-outfit-options'), data.outfit.casual, 'outfit');
-            createOptionRow(document.getElementById('traditional-outfit-options'), data.outfit.traditional, 'outfit');
-            createOptionRow(document.getElementById('fantasy-outfit-options'), data.outfit.fantasy, 'outfit');
-
-            // Pose (checkbox)
-            createOptionRow(document.getElementById('pose-options'), data.pose, 'pose');
-
-            // Backgrounds
-            createOptionRow(document.getElementById('indoor-bg-options'), data.background.indoor, 'background');
-            createOptionRow(document.getElementById('outdoor-bg-options'), data.background.outdoor, 'background');
-            createOptionRow(document.getElementById('fantasy-bg-options'), data.background.fantasy, 'background');
-
-            // Style (checkbox)
-            createOptionRow(document.getElementById('style-options'), data.style, 'style');
-
-            // Quality (checkbox)
-            createOptionRow(document.getElementById('quality-options'), data.quality, 'quality');
-        }
-
-        // Generate Prompt
-        document.getElementById('generate-btn').addEventListener('click', () => {
-            let prompt = 'A';
-
-            // Gender
-            const gender = document.querySelector('input[name="gender"]:checked');
-            if (gender) prompt += ` ${gender.value}`;
-
-            // Age
-            const age = document.querySelector('input[name="age"]:checked');
-            if (age) prompt += ` ${age.value}`;
-
-            // Character details
-            const hairColors = Array.from(document.querySelectorAll('input[name="hairColor"]:checked')).map(cb => cb.value);
-            if (hairColors.length > 0) prompt += ` with ${hairColors.join(' and ')} hair`;
-
-            const hairStyles = Array.from(document.querySelectorAll('input[name="hairStyle"]:checked')).map(cb => cb.value);
-            if (hairStyles.length > 0) prompt += ` ${hairStyles.join(' ')}`;
-
-            const eyeColors = Array.from(document.querySelectorAll('input[name="eyeColor"]:checked')).map(cb => cb.value);
-            if (eyeColors.length > 0) prompt += `, ${eyeColors.join(' and ')} eyes`;
-
-            const bodyTypes = Array.from(document.querySelectorAll('input[name="bodyType"]:checked')).map(cb => cb.value);
-            if (bodyTypes.length > 0) prompt += `, ${bodyTypes.join(' ')} body`;
-
-            // Outfit
-            const outfits = Array.from(document.querySelectorAll('input[name="outfit"]:checked')).map(cb => cb.value);
-            if (outfits.length > 0) prompt += `, wearing ${outfits.join(' and ')}`;
-
-            // Pose
-            const poses = Array.from(document.querySelectorAll('input[name="pose"]:checked')).map(cb => cb.value);
-            if (poses.length > 0) prompt += `, ${poses.join(', ')}`;
-
-            // Background
-            const backgrounds = Array.from(document.querySelectorAll('input[name="background"]:checked')).map(cb => cb.value);
-            if (backgrounds.length > 0) prompt += ` in ${backgrounds.join(' and ')}`;
-
-            // Style
-            const styles = Array.from(document.querySelectorAll('input[name="style"]:checked')).map(cb => cb.value);
-            if (styles.length > 0) prompt += `, ${styles.join(' ')} style`;
-
-            // Quality
-            const qualities = Array.from(document.querySelectorAll('input[name="quality"]:checked')).map(cb => cb.value);
-            if (qualities.length > 0) prompt += `, ${qualities.join(', ')}`;
-
-            // Output
-            document.getElementById('prompt-output').value = prompt.trim() + '.';
+    // Load keywords from JSON with fallback
+    fetch('keywords.json')
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to load keywords.json');
+            return response.json();
+        })
+        .then(data => {
+            populateOptions(data);
+        })
+        .catch(error => {
+            console.error('Error loading keywords:', error);
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('error-message').textContent = 
+                'Không thể tải keywords.json. Đang sử dụng dữ liệu dự phòng. Vui lòng đảm bảo file keywords.json nằm cùng thư mục với index.html.';
+            populateOptions(fallbackData);
         });
 
-        // Copy Prompt
-        document.getElementById('copy-btn').addEventListener('click', () => {
-            const textarea = document.getElementById('prompt-output');
-            textarea.select();
-            document.execCommand('copy');
-            alert('Prompt copied to clipboard!');
-        });
-    </script>
-</body>
-</html>
+    function populateOptions(data) {
+        // Helper function to create option rows with max 8 items per row
+        function createOptionRow(container, options, name, type = 'checkbox') {
+            container.innerHTML = '';
+            for (let i = 0; i < options.length; i += 8) {
+                const row = document.createElement('div');
+                row.className = 'option-row';
+                options.slice(i, i + 8).forEach(option => {
+                    const label = document.createElement('label');
+                    label.className = 'flex items-center';
+                    label.innerHTML = `
+                        <input type="${type}" name="${name}" value="${option.toLowerCase()}" class="mr-2">
+                        ${option}
+                    `;
+                    row.appendChild(label);
+                });
+                container.appendChild(row);
+            }
+        }
+
+        // Gender (radio)
+        createOptionRow(document.getElementById('gender-options'), data.character.gender, 'gender', 'radio');
+
+        // Age (radio)
+        createOptionRow(document.getElementById('age-options'), data.character.age, 'age', 'radio');
+
+        // Hair Color (checkbox)
+        createOptionRow(document.getElementById('hair-color-options'), data.character.hairColor, 'hairColor');
+
+        // Hair Style (checkbox)
+        createOptionRow(document.getElementById('hair-style-options'), data.character.hairStyle, 'hairStyle');
+
+        // Eye Color (checkbox)
+        createOptionRow(document.getElementById('eye-color-options'), data.character.eyeColor, 'eyeColor');
+
+        // Body Type (checkbox)
+        createOptionRow(document.getElementById('body-type-options'), data.character.bodyType, 'bodyType');
+
+        // Outfits
+        createOptionRow(document.getElementById('casual-outfit-options'), data.outfit.casual, 'outfit');
+        createOptionRow(document.getElementById('traditional-outfit-options'), data.outfit.traditional, 'outfit');
+        createOptionRow(document.getElementById('fantasy-outfit-options'), data.outfit.fantasy, 'outfit');
+
+        // Pose (checkbox)
+        createOptionRow(document.getElementById('pose-options'), data.pose, 'pose');
+
+        // Backgrounds
+        createOptionRow(document.getElementById('indoor-bg-options'), data.background.indoor, 'background');
+        createOptionRow(document.getElementById('outdoor-bg-options'), data.background.outdoor, 'background');
+        createOptionRow(document.getElementById('fantasy-bg-options'), data.background.fantasy, 'background');
+
+        // Style (checkbox)
+        createOptionRow(document.getElementById('style-options'), data.style, 'style');
+
+        // Quality (checkbox)
+        createOptionRow(document.getElementById('quality-options'), data.quality, 'quality');
+    }
+
+    // Generate Prompt
+    document.getElementById('generate-btn').addEventListener('click', () => {
+        let prompt = 'A';
+
+        // Gender
+        const gender = document.querySelector('input[name="gender"]:checked');
+        if (gender) prompt += ` ${gender.value}`;
+
+        // Age
+        const age = document.querySelector('input[name="age"]:checked');
+        if (age) prompt += ` ${age.value}`;
+
+        // Character details
+        const hairColors = Array.from(document.querySelectorAll('input[name="hairColor"]:checked')).map(cb => cb.value);
+        if (hairColors.length > 0) prompt += ` with ${hairColors.join(' and ')} hair`;
+
+        const hairStyles = Array.from(document.querySelectorAll('input[name="hairStyle"]:checked')).map(cb => cb.value);
+        if (hairStyles.length > 0) prompt += ` ${hairStyles.join(' ')}`;
+
+        const eyeColors = Array.from(document.querySelectorAll('input[name="eyeColor"]:checked')).map(cb => cb.value);
+        if (eyeColors.length > 0) prompt += `, ${eyeColors.join(' and ')} eyes`;
+
+        const bodyTypes = Array.from(document.querySelectorAll('input[name="bodyType"]:checked')).map(cb => cb.value);
+        if (bodyTypes.length > 0) prompt += `, ${bodyTypes.join(' ')} body`;
+
+        // Outfit
+        const outfits = Array.from(document.querySelectorAll('input[name="outfit"]:checked')).map(cb => cb.value);
+        if (outfits.length > 0) prompt += `, wearing ${outfits.join(' and ')}`;
+
+        // Pose
+        const poses = Array.from(document.querySelectorAll('input[name="pose"]:checked')).map(cb => cb.value);
+        if (poses.length > 0) prompt += `, ${poses.join(', ')}`;
+
+        // Background
+        const backgrounds = Array.from(document.querySelectorAll('input[name="background"]:checked')).map(cb => cb.value);
+        if (backgrounds.length > 0) prompt += ` in ${backgrounds.join(' and ')}`;
+
+        // Style
+        const styles = Array.from(document.querySelectorAll('input[name="style"]:checked')).map(cb => cb.value);
+        if (styles.length > 0) prompt += `, ${styles.join(' ')} style`;
+
+        // Quality
+        const qualities = Array.from(document.querySelectorAll('input[name="quality"]:checked')).map(cb => cb.value);
+        if (qualities.length > 0) prompt += `, ${qualities.join(', ')}`;
+
+        // Output
+        document.getElementById('prompt-output').value = prompt.trim() + '.';
+    });
+
+    // Copy Prompt
+    document.getElementById('copy-btn').addEventListener('click', () => {
+        const textarea = document.getElementById('prompt-output');
+        textarea.select();
+        document.execCommand('copy');
+        alert('Prompt copied to clipboard!');
+    });
+</script>
+
+
