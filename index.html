@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keyword Prompt Builder</title>
-  <!-- Use Tailwind CSS CDN (acceptable for static sites, though not ideal for production) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React and ReactDOM (using production versions for GitHub Pages) -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
@@ -19,10 +17,12 @@
 
     // Dữ liệu JSON mẫu (có thể thay thế)
     const SAMPLE_JSON = {
-      "Colors": ["Red", "Blue", "Green"],
-      "Objects": {
-        "Furniture": ["Table", "Chair"],
-        "Electronics": ["Phone", "Laptop"]
+      "category": {
+        "subCategory1": ["value1", "value2"],
+        "subCategory2": {
+          "nested1": ["value1", "value2"],
+          "nested2": ["value1", "value2"]
+        }
       }
     };
 
@@ -404,7 +404,6 @@
       );
     };
 
-    // Use createRoot instead of ReactDOM.render
     const root = createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
