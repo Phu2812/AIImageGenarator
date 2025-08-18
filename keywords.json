@@ -1,82 +1,301 @@
 {
-    "character": {
-        "gender": ["Female", "Male", "Futanari", "Trap", "Shemale", "Androgynous"],
-        "age": ["Teen", "Adult", "MILF", "Loli", "Mature", "Elder"],
-        "hairColor": ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink", "White", "Purple", "Orange", "Multicolored"],
-        "hairStyle": [
-            "Long straight hair", "Long wavy hair", "Ponytail", "High ponytail", "Low ponytail",
-            "Twin tails", "Messy hair", "Short bob", "Wolf cut", "Pixie cut", "Hime cut", "Curly hair", "Bed hair", "Braided hair", "Side ponytail"
-        ],
-        "eyeColor": ["Black", "Brown", "Blue", "Green", "Amber", "Red", "Purple", "Yellow", "Heterochromia"],
-        "bodyType": ["Petite", "Slim", "Athletic", "Curvy", "Busty", "Voluptuous", "Chubby", "Thick thighs", "Pear-shaped", "Hourglass"],
-        "breastSize": ["Flat chest", "Small breasts", "Medium breasts", "Large breasts", "Huge breasts", "Gigantic breasts"],
-        "buttSize": ["Small butt", "Average butt", "Bubble butt", "Large butt", "Huge butt"],
-        "face": ["Cute face", "Mature face", "Youthful face", "Seductive look", "Blushing", "Smiling", "Licking lips", "Half-open mouth", "Ahegao face"]
-    },
-    "outfit": {
-        "casual": [
-            "Open shirt", "See-through top", "Unbuttoned blouse", "Mini skirt", "Short shorts",
-            "Crop top", "Loose T-shirt", "Wet clothing", "Tank top", "School uniform (modified)", "Torn clothes"
-        ],
-        "traditional": [
-            "Loose kimono", "Partially removed yukata", "Cheongsam with high slit", "Hanbok open chest", "Miko outfit (revealing)"
-        ],
-        "fantasy": [
-            "Bikini armor", "Lewd mage robe", "Bondage harness", "Succubus outfit", "Nude cape", "Chains and cuffs", "Battle-damaged armor"
-        ],
-        "fetish": [
-            "Latex suit", "Leather harness", "Fishnet bodysuit", "Garter belt and stockings",
-            "BDSM gear", "Choker with leash", "Crotchless panties", "Pasties", "Open cup bra", "String bikini", "Micro bikini", "Body paint"
-        ]
-    },
-    "pose": {
-        "standing": [
-            "Standing", "Hands on hips", "Crossed arms", "One leg bent", "Leaning forward", "Back turned", "Looking over shoulder", "Stretching arms up"
-        ],
-        "sitting": [
-            "Sitting cross-legged", "Sitting on knees", "Sitting with legs open", "Sitting against wall",
-            "Side sitting", "Perching on edge", "Lap sitting", "Straddling chair"
-        ],
-        "lying": [
-            "Lying on back", "Lying on stomach", "Lying on side", "Arch back", "Rolling over", "Sprawled out", "Upside down pose"
-        ],
-        "nsfw": [
-            "Spread legs", "Bent over", "On all fours", "Doggy style position", "Missionary position", "Cowgirl position", "Reverse cowgirl position",
-            "Fingering", "Grinding", "Handjob pose", "Oral pose", "Pinned down", "Spreading ass cheeks", "Tied up position", "Against wall sex pose"
-        ]
-    },
-    "background": {
-        "indoor": [
-            "Bedroom", "Bathroom", "Locker room", "Love hotel", "Office desk", "Classroom (empty)",
-            "Shower room", "Changing room", "Tatami room", "Dungeon cell"
-        ],
-        "outdoor": [
-            "Beach at night", "Forest clearing", "Alleyway", "Rooftop", "Hot spring", "Garden at night", "Abandoned building", "Balcony"
-        ],
-        "fantasy": [
-            "Magic ritual room", "Succubus lair", "Dark throne room", "Dungeon torture chamber", "Enchanted forest", "Portal chamber"
-        ]
-    },
-    "genre": {
-        "basic": [
-            "Vanilla sex", "Oral sex", "Handjob", "Footjob", "Titjob", "Masturbation", "Cunnilingus", "Anal sex", "Cumshot", "Facial", "Creampie"
-        ],
-        "fetish": [
-            "BDSM", "Bondage", "Shibari", "Gagged", "Blindfold", "Collar", "Public sex", "Exhibitionism", "Voyeurism", "Pet play", "Lactation", "Impregnation"
-        ],
-        "fantasy": [
-            "Monster girl", "Tentacle sex", "Succubus", "Incubus", "Elf sex", "Catgirl", "Vampire sex", "Werewolf sex", "Slime girl"
-        ],
-        "story": [
-            "NTR", "Netori", "Cheating", "Gangbang", "Threesome", "Orgy", "Age gap", "Dirty old man", "Teacher-student", "Boss-subordinate"
-        ]
-    },
-    "style": [
-        "Lewd anime", "Hentai style", "Ecchi shading", "Soft erotic lighting", "Doujin sketch",
-        "Ultra detailed hentai", "Manga-style screentone", "Watercolor erotic", "Pixel hentai", "3D hentai render"
+  "character": {
+    "gender": [
+      "female", "male", "futa", "shemale", "trap", "androgynous",
+      "hermaphrodite", "non-binary", "genderfluid"
     ],
-    "quality": [
-        "High quality", "Ultra detailed", "Soft lighting", "Glossy skin", "Detailed body", "Perfect anatomy",
-        "Realistic skin texture", "Subsurface scattering", "Cinematic lighting", "Depth of field blur"
+    "age": [
+      "adult", "mature", "milf", "cougar", "elder",
+      "youthful adult", "college girl", "office lady",
+      "teen (18+)", "stepmom", "stepsister", "loli (legal)", "shota (legal)"
+    ],
+    "hairColor": [
+      "black", "blonde", "brown", "red", "white", "silver",
+      "blue", "green", "pink", "purple", "orange",
+      "multicolor", "gradient hair", "dyed streaks"
+    ],
+    "hairStyle": [
+      "long straight hair", "long wavy hair", "short bob", "pixie cut", "wolf cut",
+      "ponytail", "high ponytail", "low ponytail", "side ponytail", "twin tails",
+      "braided hair", "curly hair", "messy hair", "bed hair", "hime cut", "drill hair",
+      "bun", "twin buns", "undercut", "shaved side", "afro", "buzz cut"
+    ],
+    "eyeColor": [
+      "black", "brown", "blue", "green", "amber", "grey",
+      "red", "purple", "yellow", "aqua", "pink", "heterochromia"
+    ],
+    "skinTone": [
+      "pale", "fair", "light tan", "tan", "dark", "ebony", "sunburned",
+      "olive", "golden", "ashen", "freckled skin"
+    ],
+    "bodyType": [
+      "petite", "slim", "athletic", "curvy", "thick", "muscular",
+      "hourglass", "pear-shaped", "apple-shaped", "lanky", "busty"
+    ],
+    "bodyDetails": [
+      "small breasts", "medium breasts", "large breasts", "huge breasts", "gigantic breasts",
+      "perky breasts", "saggy breasts", "puffy nipples", "dark nipples", "nipple piercing",
+      "nipple clamps", "inverted nipples", "veiny breasts",
+      "small butt", "bubble butt", "large butt", "thick thighs", "gap thighs",
+      "abs", "toned muscles", "soft belly", "muffin top", "stretch marks",
+      "freckles", "tattoos", "scar", "birthmark", "tan lines",
+      "blushing", "ahegao", "seductive smile", "licking lips",
+      "pierced tongue", "pierced navel"
     ]
+  },
+  "outfit": {
+    "casual": [
+      "t-shirt", "crop top", "tank top", "shorts", "mini skirt", "jeans",
+      "hoodie", "loose shirt", "wet clothes", "unbuttoned blouse",
+      "sundress", "off-shoulder top", "leggings", "tight dress",
+      "sports bra", "yoga pants", "bikini top with shorts"
+    ],
+    "lingerie": [
+      "lace bra", "thong", "g-string", "garter belt", "stockings",
+      "fishnet stockings", "sheer panties", "bodysuit", "corset",
+      "open cup bra", "crotchless panties", "micro bikini", "string bikini",
+      "nipple pasties", "babydoll lingerie", "transparent negligee"
+    ],
+    "fetishWear": [
+      "latex suit", "leather harness", "bondage straps", "rope shibari",
+      "bunny suit", "ballet heels", "choker", "leash", "nipple clamps",
+      "anal hook", "gimp suit", "full-body latex", "PVC catsuit",
+      "zipped mask", "spreader bar outfit"
+    ],
+    "fantasy": [
+      "succubus costume", "devil outfit", "angel lingerie", "bikini armor",
+      "sexy mage robe", "elf dress (revealing)", "catgirl outfit",
+      "bunnygirl outfit", "nude cape", "battle-damaged armor",
+      "witch outfit", "fairy lingerie", "vampire corset", "demonic priestess robe"
+    ],
+    "uniforms": [
+      "schoolgirl uniform", "nurse outfit", "maid outfit", "police uniform",
+      "military uniform", "teacher outfit", "cheerleader outfit",
+      "office suit (revealing)", "shrine maiden outfit", "nun habit (lewd)",
+      "bar waitress uniform", "stewardess outfit", "gym outfit", "swimsuit school uniform"
+    ]
+  },
+  "pose": {
+    "solo": [
+      "standing straight", "standing with one leg bent", "hands on hips",
+      "leaning forward", "looking over shoulder", "stretching arms up",
+      "sitting cross-legged", "sitting on knees", "side sitting",
+      "perching on edge", "lying on back", "lying on stomach",
+      "arch back", "sprawled out", "hand on chest", "hand between legs"
+    ],
+    "couple": [
+      "hug from behind", "kiss on lips", "lifted by partner",
+      "straddling partner", "lap sitting", "hand holding", "groping",
+      "grinding hips", "leg wrapped around waist", "head resting on chest",
+      "passionate embrace", "teasing bite on neck"
+    ],
+    "group": [
+      "threesome pose", "gangbang lineup", "multiple partners surrounding",
+      "spitroast", "shared licking", "double penetration preparation",
+      "orgy pile", "bukkake circle", "chain kissing", "group cuddling"
+    ],
+    "sexPositions": {
+      "vanilla": [
+        "missionary", "missionary with legs up", "side missionary",
+        "slow passionate sex", "cuddle sex", "lazy spoon sex",
+        "face to face side sex", "lotus position"
+      ],
+      "oral": [
+        "blowjob", "deepthroat", "facefuck",
+        "cunnilingus", "facesitting", "queening",
+        "69 position", "sixty-nine standing",
+        "oral worship", "ass licking", "rimming"
+      ],
+      "anal": [
+        "anal sex", "doggystyle anal", "reverse cowgirl anal",
+        "double anal", "anal fisting", "standing anal",
+        "anal missionary", "anal piledriver"
+      ],
+      "tribadism": [
+        "scissoring", "tribadism grinding", "lesbian grinding",
+        "side-to-side scissoring", "face-to-face tribbing"
+      ],
+      "penetrationPositions": [
+        "reverse cowgirl", "cowgirl", "doggystyle",
+        "doggystyle with hair pulling", "standing sex",
+        "wall sex", "double vaginal", "piledriver",
+        "butterfly position", "amazon position",
+        "lotus penetration", "lap sex", "chair sex"
+      ],
+      "frottage": [
+        "cock grinding", "thigh rubbing", "penis on penis rubbing",
+        "under table frottage", "panty grinding"
+      ],
+      "groupSex": [
+        "gangbang", "bukkake", "cumshot orgy",
+        "multiple penetration", "spitroast",
+        "triple penetration", "reverse gangbang",
+        "circle jerk", "orgy pile sex"
+      ],
+      "fetishSex": [
+        "bondage sex with toys", "temperature play (ice)",
+        "temperature play (hot wax)", "orgasm denial",
+        "edging sex", "cum inflation", "womb filling",
+        "breathplay sex", "fisting vaginal", "fisting anal",
+        "impact play sex", "suspension sex", "medical play sex"
+      ],
+      "machineSex": [
+        "sybian ride", "fucking machine",
+        "dildo machine penetration", "vibrator with restraints",
+        "sex machine double penetration"
+      ],
+      "fantasySex": [
+        "monster sex", "alien sex", "tentacle sex",
+        "slime girl sex", "werewolf sex", "vampire sex",
+        "ghost sex", "succubus drain sex", "robot android sex"
+      ]
+    }
+  },
+  "fetish": {
+    "soft": [
+      "lingerie tease", "striptease", "spanking (light)", "ear licking",
+      "foot kissing", "hair pulling (gentle)", "blindfold play",
+      "mirror sex", "voyeurism", "public flashing", "wet clothes play",
+      "under table teasing", "lapdance tease", "teasing with ice",
+      "light bondage", "tickle play", "soft dirty talk"
+    ],
+    "medium": [
+      "anal play", "nipple clamps", "choking (light)", "ass worship",
+      "body worship", "footjob", "oiled body", "cum on body",
+      "cum on face", "cum on breasts", "cum on stomach",
+      "bondage (light)", "rope shibari", "handcuff play",
+      "sensory deprivation", "gag play", "dirty talk",
+      "roleplay scenarios", "temperature play", "ice play", "wax play",
+      "impact play (spanking)", "domination play", "submission play"
+    ],
+    "hard": [
+      "breathplay sex", "heavy bondage", "hogtie", "spread eagle restraint",
+      "suspension bondage", "fisting vaginal", "fisting anal",
+      "double penetration", "triple penetration", "cum inflation",
+      "womb filling", "enema play", "electro play",
+      "impact play (hard spanking, whipping)", "knife play (consensual)",
+      "medical play", "needle play", "humiliation play",
+      "watersports", "scat play (extreme)", "blood play (consensual)",
+      "fear play", "consensual non-consent roleplay"
+    ]
+  },
+  "sexToys": {
+    "basic": [
+      "dildo", "vibrator", "bullet vibrator", "rabbit vibrator",
+      "strap-on", "double-ended dildo", "anal beads", "butt plug",
+      "g-spot vibrator", "wand massager", "cock ring",
+      "penis pump", "love egg vibrator"
+    ],
+    "analToys": [
+      "butt plug (gem)", "tail butt plug", "inflatable butt plug",
+      "prostate massager", "anal hook", "anal beads (large)",
+      "speculum (anal)", "vibrating anal plug", "rose butt plug",
+      "stretching plug set"
+    ],
+    "machineToys": [
+      "sybian", "fucking machine", "dildo machine",
+      "piston sex machine", "vibrator machine",
+      "sex swing with machine", "dual penetration machine"
+    ],
+    "fetishToys": [
+      "nipple clamps", "clover clamps", "nipple suction cups",
+      "tit torture device", "cock ring", "ball stretcher",
+      "urethral sound", "electro stimulation wand", "restraint table",
+      "spreader bar", "hogtie kit", "suspension rig",
+      "bondage cage", "leather restraints", "metal chastity cage",
+      "shock collar", "gimp mask", "latex hood"
+    ]
+  },
+  "fluids": {
+    "light": [
+      "saliva", "pre-cum", "sweat", "wet pussy",
+      "wet spot on panties", "drooling", "licked wet skin"
+    ],
+    "heavy": [
+      "cum dripping", "cum on face", "cum on breasts",
+      "cum on ass", "cum inside pussy", "cum inside ass",
+      "squirting", "squirt puddle", "creampie",
+      "multiple creampie", "throat creampie",
+      "anal creampie"
+    ],
+    "extreme": [
+      "bukkake", "cumshot orgy", "multiple creampie",
+      "womb inflation with cum", "milk play", "watersports",
+      "oil covering", "slime covering", "cum bath",
+      "cum inflation", "gokkun (drinking cum)",
+      "vomit play (extreme)", "blood play (extreme)"
+    ]
+  },
+  "background": {
+    "indoor": [
+      "bedroom", "bathroom", "shower", "living room",
+      "kitchen counter", "office desk", "hotel room",
+      "locker room", "classroom", "nurse office",
+      "sex dungeon", "tatami room", "luxury suite",
+      "basement", "garage", "changing room"
+    ],
+    "outdoor": [
+      "beach", "forest", "rooftop", "park bench",
+      "alleyway", "swimming pool", "hot spring", "balcony",
+      "car hood", "tent campsite", "desert dune",
+      "mountain top", "riverbank", "abandoned street"
+    ],
+    "fantasy": [
+      "castle chamber", "magic forest", "demonic throne room",
+      "heavenly cloud palace", "tentacle pit", "succubus lair",
+      "fairy grove", "dragon's den", "haunted mansion",
+      "eldritch altar", "otherworldly void", "goddess temple",
+      "dark ritual chamber"
+    ],
+    "sciFi": [
+      "spaceship cabin", "alien planet", "cyberpunk city",
+      "hologram room", "robot lab", "zero gravity chamber",
+      "cryogenic pod room", "AI server core",
+      "bioengineering lab", "futuristic brothel"
+    ]
+  },
+  "style": [
+    "realistic", "semi-realistic", "anime style", "manga style",
+    "cartoon", "western comic style", "hentai style", "ecchi style",
+    "chibi style (erotic parody)", "3D render", "CGI",
+    "oil painting style", "sketch", "line art", "watercolor style",
+    "pixel art", "VR immersive", "photorealistic"
+  ],
+  "quality": [
+    "low quality", "medium quality", "high quality",
+    "ultra HD", "8K resolution", "AI enhanced",
+    "professional studio", "cinematic quality",
+    "grainy VHS style", "retro filter"
+  ],
+  "lighting": [
+    "soft lighting", "hard lighting", "spotlight",
+    "candlelight", "neon lights", "backlit",
+    "rim lighting", "overexposed", "underexposed",
+    "red light district", "stage lighting", "romantic warm light",
+    "moonlight", "sunset glow", "cyberpunk neon",
+    "strobe light", "dark dungeon light"
+  ],
+  "camera": [
+    "close-up", "extreme close-up", "wide shot", "panoramic",
+    "POV (point of view)", "first person view",
+    "over the shoulder", "mirror reflection",
+    "drone angle", "low angle", "high angle",
+    "upskirt angle", "downblouse angle", "fisheye lens",
+    "cinematic zoom", "slow pan", "freeze frame"
+  ],
+  "genre": [
+    "romantic sex", "public sex", "shower sex", "pool sex",
+    "voyeur sex", "sleep sex (consensual somnophilia)",
+    "monster sex", "tentacle sex", "alien sex",
+    "foodplay sex", "medical play sex", "roleplay sex",
+    "bondage sex", "gangbang sex", "orgy sex",
+    "incest roleplay", "teacher-student roleplay",
+    "boss-secretary sex", "maid sex", "nurse sex",
+    "police roleplay", "military roleplay", "cosplay sex",
+    "porn parody", "fetish-specific scenes",
+    "hard BDSM", "softcore erotic", "hardcore porn",
+    "romantic hentai", "paranormal sex",
+    "sci-fi sex", "cyberpunk sex", "fantasy RPG sex",
+    "isekai sex adventure"
+  ]
 }
