@@ -74,7 +74,9 @@
       "office suit (revealing)", "shrine maiden outfit", "nun habit (lewd)",
       "bar waitress uniform", "stewardess outfit", "gym outfit", "swimsuit school uniform"
     ]
-  },
+  }
+}
+{
   "pose": {
     "solo": [
       "standing straight", "standing with one leg bent", "hands on hips",
@@ -150,7 +152,9 @@
         "ghost sex", "succubus drain sex", "robot android sex"
       ]
     }
-  },
+  }
+}
+{
   "fetish": {
     "soft": [
       "lingerie tease", "striptease", "spanking (light)", "ear licking",
@@ -205,7 +209,9 @@
       "bondage cage", "leather restraints", "metal chastity cage",
       "shock collar", "gimp mask", "latex hood"
     ]
-  },
+  }
+}
+{
   "fluids": {
     "light": [
       "saliva", "pre-cum", "sweat", "wet pussy",
@@ -253,7 +259,9 @@
       "cryogenic pod room", "AI server core",
       "bioengineering lab", "futuristic brothel"
     ]
-  },
+  }
+}
+{
   "style": [
     "realistic", "semi-realistic", "anime style", "manga style",
     "cartoon", "western comic style", "hentai style", "ecchi style",
