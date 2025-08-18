@@ -1,272 +1,460 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-      body {
-        background-color: #1a1a1a;
-        color: #e5e7eb;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
+import React, { useEffect, useMemo, useState } from "react";
 
-      .container {
-        background-color: #2d2d2d;
-        border: 1px solid #4b5563;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      }
+// 🧩 Keyword Prompt Builder – đọc JSON cùng thư mục và tạo prompt gen ảnh
+// Cách dùng (deploy cực nhanh):
+// 1) Tạo 2 file trong cùng thư mục: 
+//    - index.html (được build từ dự án React này) 
+//    - keywords.json (chính là file JSON bạn gửi ở trên)
+// 2) Ứng dụng sẽ tự fetch("./keywords.json") khi tải trang.
+// 3) Người dùng tick chọn keyword để tạo prompt, copy 1 chạm.
+//
+// ✅ Tính năng nổi bật:
+// - Tự động đọc keywords.json ở cùng thư mục (có fallback Import file thủ công)
+// - Hiển thị dạng nhóm/accordion, hỗ trợ lồng sâu (object trong object/array)
+// - Tìm kiếm nhanh theo từ khoá
+// - Multi-select, Chọn/Bỏ chọn nhóm
+// - Bộ lọc: chỉ mục đã chọn / tất cả
+// - Tuỳ chỉnh joiner, có/không nhãn danh mục, thứ tự nhóm
+// - Copy prompt, đếm token (xấp xỉ), lưu/khôi phục preset (localStorage)
+// - Hỗ trợ dark mode theo hệ thống
+//
+// ⚠️ Lưu ý: nếu chạy file tĩnh trên file:// thì fetch có thể bị chặn do CORS. Hãy dùng một web server tĩnh
+// (vd: npx serve, vite preview, hoặc upload lên hosting).
 
-      .section-title {
-        color: #60a5fa;
-      }
+// ----------------------------- Helper types -----------------------------
 
-      input[type="radio"],
-      input[type="checkbox"] {
-        accent-color: #60a5fa;
-      }
+type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
+interface JSONObject { [key: string]: JSONValue }
+interface JSONArray extends Array<JSONValue> {}
 
-      textarea,
-      button {
-        background-color: #374151;
-        color: #e5e7eb;
-        border: 1px solid #4b5563;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-      }
+type SelectionMap = Record<string, Set<string>>; // key: groupPath, values selected
 
-      button:hover {
-        background-color: #2563eb;
-        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.5);
-      }
+// ----------------------------- UI Primitives (thuần Tailwind) -----------------------------
 
-      #copy-btn:hover {
-        background-color: #16a34a;
-        box-shadow: 0 2px 4px rgba(22, 163, 74, 0.5);
-      }
+function Button({ className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className={`px-3 py-2 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-700 active:scale-[.99] shadow-sm transition ${className}`}
+      {...props}
+    />
+  );
+}
 
-      #error-message {
-        color: #f87171;
-        display: none;
-        animation: fadeIn 0.5s ease-in-out;
-      }
+function Card({ className = "", ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={`rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/70 dark:bg-zinc-900/70 shadow-sm ${className}`} {...props} />
+}
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
+function Checkbox({ checked, onChange, disabled }: { checked?: boolean, onChange?: (v:boolean)=>void, disabled?: boolean }) {
+  return (
+    <label className={`inline-flex items-center gap-2 select-none cursor-pointer ${disabled?"opacity-50 cursor-not-allowed":""}`}>
+      <input type="checkbox" className="size-4 accent-indigo-600" checked={!!checked} onChange={e=>onChange?.(e.target.checked)} disabled={disabled} />
+    </label>
+  )
+}
 
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+function Switch({ checked, onChange }: { checked: boolean, onChange: (v:boolean)=>void }){
+  return (
+    <button onClick={()=>onChange(!checked)} className={`w-12 h-7 rounded-full p-1 transition ${checked?"bg-indigo-600":"bg-zinc-300 dark:bg-zinc-700"}`}>
+      <span className={`block w-5 h-5 bg-white rounded-full transition ${checked?"translate-x-5":""}`} />
+    </button>
+  )
+}
 
-      .option-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1.5rem;
-        max-width: 100%;
-      }
+function Badge({ children }: { children: React.ReactNode }){
+  return <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800">{children}</span>
+}
 
-      .option-row label {
-        display: flex;
-        align-items: center;
-        max-width: 100%;
-        padding: 0.5rem;
-        border-radius: 4px;
-        transition: background 0.2s ease;
-        cursor: pointer;
-      }
+// ----------------------------- Utils -----------------------------
 
-      .option-row label:hover {
-        background-color: #374151;
-      }
+const DEFAULT_JOINER = ", ";
 
-      .option-row label span {
-        white-space: normal;
-        word-wrap: break-word;
-        max-width: calc(100% - 1.5rem);
+function flattenEntries(obj: JSONValue, basePath: string[] = []): { path: string[], label: string, value?: string, kind: "group"|"item" }[] {
+  const out: { path: string[], label: string, value?: string, kind: "group"|"item" }[] = [];
+  if (Array.isArray(obj)) {
+    // array of strings or nested
+    obj.forEach(v => {
+      if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
+        out.push({ path: basePath, label: String(v), value: String(v), kind: "item" })
+      } else if (v && typeof v === "object") {
+        // uncommon, but handle array of objects
+        const idx = out.length;
+        out.push({ path: basePath, label: `item_${idx}`, kind: "group" });
+        out.push(...flattenEntries(v as JSONObject, basePath));
       }
+    });
+  } else if (obj && typeof obj === "object") {
+    Object.entries(obj as JSONObject).forEach(([k, v]) => {
+      const newPath = [...basePath, k];
+      if (Array.isArray(v)) {
+        out.push({ path: newPath, label: k, kind: "group" });
+        v.forEach(it => {
+          if (typeof it === "string" || typeof it === "number" || typeof it === "boolean") {
+            out.push({ path: newPath, label: String(it), value: String(it), kind: "item" })
+          } else if (it && typeof it === "object") {
+            // nested object inside array (rare) -> treat as subgroup
+            out.push({ path: newPath, label: k, kind: "group" });
+            out.push(...flattenEntries(it as JSONObject, newPath));
+          }
+        })
+      } else if (v && typeof v === "object") {
+        out.push({ path: newPath, label: k, kind: "group" });
+        out.push(...flattenEntries(v as JSONObject, newPath));
+      }
+    })
+  }
+  return out;
+}
 
-      .option-row label input {
-        flex-shrink: 0;
-        margin-right: 0.5rem;
-      }
-    </style>
-  </head>
-  <body class="p-8">
-    <div class="max-w-4xl mx-auto container p-6 rounded-lg shadow-md">
-      <h1 class="text-2xl font-bold mb-6 text-center text-blue-400">Character Prompt Generator</h1>
-      <div id="error-message" class="text-center mb-4"></div>
-      <form id="prompt-form">
-        <div id="dynamic-sections" class="space-y-6"></div>
-        <button type="button" id="generate-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Generate Prompt</button>
-      </form>
-      <div class="mt-6">
-        <textarea id="prompt-output" class="w-full h-32 p-2 rounded" readonly></textarea>
-        <button id="copy-btn" class="mt-2 bg-green-600 text-white px-4 py-2 rounded">Copy Prompt</button>
+function pathKey(path: string[]) { return path.join("."); }
+
+function ensureSet(map: SelectionMap, key: string) {
+  if (!map[key]) map[key] = new Set<string>();
+  return map[key];
+}
+
+function countTokensApprox(text: string){
+  // xấp xỉ: 1 token ~ 4 ký tự latin (rất thô, chỉ để tham khảo)
+  const len = text.trim().length;
+  return Math.ceil(len / 4);
+}
+
+// ----------------------------- Components -----------------------------
+
+const GroupBlock: React.FC<{
+  title: string,
+  children?: React.ReactNode,
+  right?: React.ReactNode,
+  defaultOpen?: boolean
+}> = ({ title, children, right, defaultOpen }) => {
+  const [open, setOpen] = useState(!!defaultOpen);
+  return (
+    <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+      <button onClick={()=>setOpen(o=>!o)} className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-zinc-50 dark:bg-zinc-900 text-left">
+        <div className="font-semibold">{title}</div>
+        <div className="flex items-center gap-3">
+          {right}
+          <span className={`i ${open?"rotate-180":""} transition inline-block text-zinc-500`}>▾</span>
+        </div>
+      </button>
+      {open && (
+        <div className="p-4">
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const ItemsGrid: React.FC<{ items: string[], groupKey: string, selections: SelectionMap, onToggle: (groupKey:string, item:string, checked:boolean)=>void }>
+= ({ items, groupKey, selections, onToggle }) => {
+  const chosen = selections[groupKey] || new Set<string>();
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+      {items.map((label) => {
+        const checked = chosen.has(label);
+        return (
+          <label key={label} className={`flex items-center gap-2 px-2 py-1 rounded-xl border text-sm cursor-pointer select-none ${checked?"border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30":"border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"}`}>
+            <input type="checkbox" className="size-4 accent-indigo-600" checked={checked} onChange={e=>onToggle(groupKey, label, e.target.checked)} />
+            <span>{label}</span>
+          </label>
+        )
+      })}
+    </div>
+  )
+}
+
+const Toolbar: React.FC<{
+  joiner: string, setJoiner: (v:string)=>void,
+  showLabels: boolean, setShowLabels: (v:boolean)=>void,
+  onlySelected: boolean, setOnlySelected: (v:boolean)=>void,
+  onClearAll: ()=>void, onSelectAllInView: ()=>void,
+}> = ({ joiner, setJoiner, showLabels, setShowLabels, onlySelected, setOnlySelected, onClearAll, onSelectAllInView }) => {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-zinc-500">Nối bằng</span>
+        <input value={joiner} onChange={e=>setJoiner(e.target.value)} className="px-2 py-1 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent w-28" />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-zinc-500">Hiện nhãn nhóm</span>
+        <Switch checked={showLabels} onChange={setShowLabels} />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-zinc-500">Chỉ nhóm có chọn</span>
+        <Switch checked={onlySelected} onChange={setOnlySelected} />
+      </div>
+      <div className="ml-auto flex items-center gap-2">
+        <Button className="bg-zinc-200 text-zinc-900 hover:bg-zinc-300" onClick={onSelectAllInView}>Chọn tất cả trong khung</Button>
+        <Button className="bg-rose-600 hover:bg-rose-700" onClick={onClearAll}>Bỏ chọn hết</Button>
       </div>
     </div>
-    <script type="text/javascript">
-      var gk_isXlsx = false;
-      var gk_xlsxFileLookup = {};
-      var gk_fileData = {};
+  )
+}
 
-      function filledCell(cell) {
-        return cell !== '' && cell != null;
-      }
+// ----------------------------- Main App -----------------------------
 
-      function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-          try {
-            var workbook = XLSX.read(gk_fileData[filename], {
-              type: 'base64'
-            });
-            var firstSheetName = workbook.SheetNames[0];
-            var worksheet = workbook.Sheets[firstSheetName];
-            var jsonData = XLSX.utils.sheet_to_json(worksheet, {
-              header: 1,
-              blankrows: false,
-              defval: ''
-            });
-            var filteredData = jsonData.filter(row => row.some(filledCell));
-            var headerRowIndex = filteredData.findIndex((row, index) => row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length);
-            if (headerRowIndex === -1 || headerRowIndex > 25) {
-              headerRowIndex = 0;
-            }
-            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-            csv = XLSX.utils.sheet_to_csv(csv, {
-              header: 1
-            });
-            return csv;
-          } catch (e) {
-            console.error(e);
-            return "";
-          }
-        }
-        return gk_fileData[filename] || "";
-      }
-      // Fallback JSON data
-      const fallbackData = {
-        character: {
-          gender: ["Male", "Female", "Other"],
-          age: ["Child", "Teen", "Adult"],
-          hairColor: ["Black", "Blonde", "Brown", "Red", "Silver", "Blue", "Green", "Pink"],
-          hairStyle: ["Short", "Long", "Ponytail", "Bob cut", "Twin tails", "Wolf cut"],
-          eyeColor: ["Black", "Brown", "Blue", "Green", "Amber", "Grey"],
-          bodyType: ["Slim", "Athletic", "Curvy", "Petite"]
-        },
-        outfit: {
-          casual: ["T-shirt", "Hoodie", "Crop top", "Shirt", "Jeans", "Skirt"],
-          traditional: ["Kimono", "Hanbok", "Cheongsam"],
-          fantasy: ["Armor", "Mage robe", "Cloak"]
-        },
-        pose: ["Standing", "Sitting", "Walking", "Running", "Jumping", "Looking over shoulder", "Holding object"],
-        background: {
-          indoor: ["Bedroom", "Classroom", "Cafe", "Library"],
-          outdoor: ["Park", "Beach", "Forest", "City street", "Market"],
-          fantasy: ["Castle", "Dungeon", "Magic circle"]
-        },
-        style: ["Anime", "Semi-realistic", "Pixel art", "Watercolor", "Sketch", "3D render"],
-        quality: ["High quality", "Ultra detailed", "Soft lighting", "Dynamic lighting"]
-      };
-      // Load keywords from JSON with fallback
-      fetch('keywords.json').then(response => {
-        if (!response.ok) throw new Error('Không thể tải keywords.json');
-        return response.json();
-      }).then(data => {
-        populateOptions(data);
-      }).catch(error => {
-        console.error('Error loading keywords:', error);
-        document.getElementById('error-message').style.display = 'block';
-        document.getElementById('error-message').textContent = 'Không thể tải keywords.json. Đang sử dụng dữ liệu dự phòng. Vui lòng đảm bảo file keywords.json nằm cùng thư mục với index.html.';
-        populateOptions(fallbackData);
-      });
+export default function App(){
+  const [raw, setRaw] = useState<JSONObject | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [joiner, setJoiner] = useState(DEFAULT_JOINER);
+  const [showLabels, setShowLabels] = useState(true);
+  const [onlySelected, setOnlySelected] = useState(false);
+  const [selections, setSelections] = useState<SelectionMap>(() => {
+    const saved = localStorage.getItem("kp_selections");
+    return saved ? Object.fromEntries(Object.entries(JSON.parse(saved)).map(([k, arr])=>[k, new Set(arr as string[])])) : {};
+  });
 
-      function populateOptions(data) {
-        const sectionsContainer = document.getElementById('dynamic-sections');
-        sectionsContainer.innerHTML = '';
-        // Helper function to create option rows with max 8 items per row
-        function createOptionRow(options, name, type = 'checkbox') {
-          const container = document.createElement('div');
-          for (let i = 0; i < options.length; i += 8) {
-            const row = document.createElement('div');
-            row.className = 'option-row';
-            options.slice(i, i + 8).forEach(option => {
-              const label = document.createElement('label');
-              label.className = 'flex items-center';
-              label.innerHTML = `
-                            
-					
-					<input type="${type}" name="${name}" value="${option.toLowerCase()}" class="mr-2">
-						<span>${option}</span>
-                        `;
-              row.appendChild(label);
-            });
-            container.appendChild(row);
+  // Tải keywords.json
+  useEffect(()=>{
+    fetch("./keywords.json", { cache: "no-store" })
+      .then(r=>{ if(!r.ok) throw new Error(`Không đọc được keywords.json (${r.status})`); return r.json(); })
+      .then((data)=> setRaw(data))
+      .catch((e)=> setError(e.message));
+  },[]);
+
+  // Lưu selections
+  useEffect(()=>{
+    const json = Object.fromEntries(Object.entries(selections).map(([k, s])=>[k, Array.from(s)]));
+    localStorage.setItem("kp_selections", JSON.stringify(json));
+  }, [selections])
+
+  const groups = useMemo(()=>{
+    if(!raw) return [] as { title: string, items: string[], key: string }[];
+    // Lấy tất cả nhóm top-level (object keys). Nếu giá trị là object/array sâu, gom item lá
+    const out: { title: string, items: string[], key: string }[] = [];
+
+    function collect(node: JSONValue, prefix: string[]){
+      if (Array.isArray(node)){
+        const items: string[] = [];
+        node.forEach(v=>{ if(typeof v!=="object") items.push(String(v)); });
+        if (items.length){ out.push({ title: prefix[prefix.length-1] || "items", items, key: pathKey(prefix) }); }
+        node.forEach(v=>{ if (v && typeof v === "object") collect(v as JSONObject, prefix); });
+      } else if (node && typeof node === "object"){
+        Object.entries(node).forEach(([k, v]) => {
+          const p = [...prefix, k];
+          if (Array.isArray(v)){
+            const items: string[] = [];
+            v.forEach(it=>{ if(typeof it!=="object") items.push(String(it)); });
+            out.push({ title: k, items, key: pathKey(p) });
+            v.forEach(it=>{ if (it && typeof it === "object") collect(it as JSONObject, p); });
+          } else if (v && typeof v === "object"){
+            collect(v as JSONObject, p);
           }
-          return container;
-        }
-        // Generate sections dynamically
-        Object.keys(data).forEach(sectionKey => {
-          const sectionDiv = document.createElement('div');
-          sectionDiv.className = 'mb-6';
-          const sectionTitle = document.createElement('h2');
-          sectionTitle.className = 'text-xl font-semibold mb-2 section-title';
-          sectionTitle.textContent = sectionKey.charAt(0).toUpperCase() + sectionKey.slice(1);
-          sectionDiv.appendChild(sectionTitle);
-          const sectionContent = document.createElement('div');
-          sectionContent.className = 'space-y-4';
-          const sectionData = data[sectionKey];
-          if (Array.isArray(sectionData)) {
-            sectionContent.appendChild(createOptionRow(sectionData, sectionKey));
-          } else {
-            Object.keys(sectionData).forEach(subKey => {
-              const subDiv = document.createElement('div');
-              const subTitle = document.createElement('p');
-              subTitle.className = 'font-medium mb-1';
-              subTitle.textContent = subKey.charAt(0).toUpperCase() + subKey.slice(1);
-              subDiv.appendChild(subTitle);
-              subDiv.appendChild(createOptionRow(sectionData[subKey], subKey, sectionKey === 'character' && ['gender', 'age'].includes(subKey) ? 'radio' : 'checkbox'));
-              sectionContent.appendChild(subDiv);
-            });
-          }
-          sectionDiv.appendChild(sectionContent);
-          sectionsContainer.appendChild(sectionDiv);
-        });
+        })
       }
-      // Generate Prompt (NSFW)
-      document.getElementById('generate-btn').addEventListener('click', () => {
-        let promptParts = [];
-        const allInputs = document.querySelectorAll('input[type="radio"]:checked, input[type="checkbox"]:checked');
-        const sections = {};
-        // Gom các lựa chọn vào section
-        allInputs.forEach(input => {
-          const section = input.name;
-          if (!sections[section]) sections[section] = [];
-          sections[section].push(input.value);
-        });
-        // Nối toàn bộ theo đúng thứ tự section
-        Object.keys(sections).forEach(section => {
-          promptParts.push(...sections[section]);
-        });
-        // Ghép prompt thành chuỗi (dùng dấu phẩy)
-        let prompt = promptParts.join(', ');
-        // Output
-        document.getElementById('prompt-output').value = prompt.trim();
+    }
+
+    collect(raw, []);
+
+    // gom nhóm trùng key (nếu có) => merge items unique
+    const merged = new Map<string, { title:string, items:Set<string>, key:string }>();
+    out.forEach(g => {
+      const exist = merged.get(g.key);
+      if (!exist) merged.set(g.key, { title: g.title, items: new Set(g.items), key: g.key });
+      else g.items.forEach(i=>exist.items.add(i));
+    });
+    return Array.from(merged.values()).map(m => ({ title: m.title, items: Array.from(m.items).sort(), key: m.key }));
+  }, [raw]);
+
+  const filteredGroups = useMemo(()=>{
+    const q = query.trim().toLowerCase();
+    const result = groups.filter(g => {
+      if (onlySelected){
+        const set = selections[g.key];
+        if (!set || set.size===0) return false;
+      }
+      if (!q) return true;
+      return g.title.toLowerCase().includes(q) || g.items.some(it=>it.toLowerCase().includes(q));
+    });
+    // sắp xếp: nhóm có chọn nổi lên trước, sau đó theo tên
+    return result.sort((a,b)=>{
+      const sa = (selections[a.key]?.size||0); const sb = (selections[b.key]?.size||0);
+      if (sa!==sb) return sb-sa;
+      return a.title.localeCompare(b.title);
+    })
+  }, [groups, query, selections, onlySelected]);
+
+  function toggleItem(groupKey: string, item: string, checked: boolean){
+    setSelections(prev => {
+      const copy: SelectionMap = { ...prev };
+      const set = ensureSet(copy, groupKey);
+      if (checked) set.add(item); else set.delete(item);
+      return { ...copy };
+    })
+  }
+
+  function selectAllInView(){
+    setSelections(prev => {
+      const copy: SelectionMap = { ...prev };
+      filteredGroups.forEach(g => {
+        const set = ensureSet(copy, g.key);
+        g.items.forEach(it => set.add(it));
       });
-      // Copy Prompt
-      document.getElementById('copy-btn').addEventListener('click', () => {
-        const textarea = document.getElementById('prompt-output');
-        textarea.select();
-        document.execCommand('copy');
-        alert('Prompt copied to clipboard!');
-      });
-    </script>
-  </body>
-</html>
+      return { ...copy };
+    })
+  }
+
+  function clearAll(){ setSelections({}); }
+
+  const prompt = useMemo(()=>{
+    const parts: string[] = [];
+    filteredGroups // xuất theo toàn bộ groups ban đầu để giữ trật tự tự nhiên
+      ;
+    (groups).forEach(g => {
+      const chosen = selections[g.key];
+      if (!chosen || chosen.size===0) return;
+      const items = Array.from(chosen);
+      const segment = showLabels ? `${g.title}: ${items.join(joiner)}` : items.join(joiner);
+      parts.push(segment);
+    })
+    return parts.join("; ");
+  }, [groups, selections, joiner, showLabels]);
+
+  const tokenApprox = useMemo(()=>countTokensApprox(prompt), [prompt]);
+
+  function copyPrompt(){
+    navigator.clipboard.writeText(prompt).then(()=>{
+      alert("Đã copy prompt vào Clipboard ✓");
+    })
+  }
+
+  function savePreset(){
+    const json = Object.fromEntries(Object.entries(selections).map(([k, s])=>[k, Array.from(s)]));
+    const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'prompt-preset.json'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function loadPresetFromFile(file: File){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const obj = JSON.parse(String(reader.result));
+        const map: SelectionMap = Object.fromEntries(Object.entries(obj).map(([k, arr])=>[k, new Set(arr as string[])]));
+        setSelections(map);
+      } catch(e){ alert("Tệp preset không hợp lệ."); }
+    };
+    reader.readAsText(file);
+  }
+
+  function importKeywordsFromFile(file: File){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try { setRaw(JSON.parse(String(reader.result))); setError(null); }
+      catch(e){ alert("Tệp JSON không hợp lệ."); }
+    };
+    reader.readAsText(file);
+  }
+
+  return (
+    <div className="min-h-dvh bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-950 dark:to-zinc-900 text-zinc-900 dark:text-zinc-100">
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-10">
+        <header className="flex flex-wrap items-center gap-4 mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold">Keyword Prompt Builder</h1>
+          <Badge>Đọc từ: <code className="ml-1">keywords.json</code></Badge>
+          {!!error && <span className="text-rose-600">(Không đọc được tự động — bạn có thể Import thủ công)</span>}
+          <div className="ml-auto flex items-center gap-2">
+            <input placeholder="Tìm nhóm/keyword..." value={query} onChange={e=>setQuery(e.target.value)} className="px-3 py-2 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-transparent w-64" />
+            <Button onClick={copyPrompt}>Copy Prompt</Button>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Cột trái: cấu hình & preview */}
+          <div className="lg:col-span-1 space-y-4">
+            <Card className="p-4 space-y-4">
+              <h2 className="font-semibold">Cấu hình xuất prompt</h2>
+              <Toolbar
+                joiner={joiner}
+                setJoiner={setJoiner}
+                showLabels={showLabels}
+                setShowLabels={setShowLabels}
+                onlySelected={onlySelected}
+                setOnlySelected={setOnlySelected}
+                onClearAll={clearAll}
+                onSelectAllInView={selectAllInView}
+              />
+            </Card>
+
+            <Card className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold">Prompt preview</h2>
+                <Badge>{tokenApprox} tokens ~ (ước lượng)</Badge>
+              </div>
+              <textarea value={prompt} readOnly rows={10} className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-transparent p-3 text-sm" />
+              <div className="flex items-center gap-2">
+                <Button onClick={copyPrompt}>Copy</Button>
+                <Button className="bg-zinc-200 text-zinc-900 hover:bg-zinc-300" onClick={savePreset}>Lưu preset</Button>
+                <label className="cursor-pointer px-3 py-2 rounded-2xl border border-zinc-200 dark:border-zinc-800">Tải preset
+                  <input hidden type="file" accept="application/json" onChange={e=>{const f=e.target.files?.[0]; if(f) loadPresetFromFile(f);}} />
+                </label>
+              </div>
+            </Card>
+
+            <Card className="p-4 space-y-3">
+              <h2 className="font-semibold">Nguồn từ khoá</h2>
+              <p className="text-sm text-zinc-500">Ứng dụng sẽ tự tìm <code>./keywords.json</code>. Nếu không có, bạn có thể nhập file thủ công.</p>
+              <label className="cursor-pointer w-full text-center px-3 py-2 rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900">Import keywords.json
+                <input hidden type="file" accept="application/json" onChange={e=>{const f=e.target.files?.[0]; if(f) importKeywordsFromFile(f);}} />
+              </label>
+            </Card>
+          </div>
+
+          {/* Cột phải: danh sách nhóm/keywords */}
+          <div className="lg:col-span-2 space-y-4">
+            {!raw && !error && (
+              <Card className="p-6 text-center text-zinc-500">Đang tải <code>keywords.json</code>…</Card>
+            )}
+
+            {error && (
+              <Card className="p-6 text-sm text-zinc-600 dark:text-zinc-300 space-y-2">
+                <div className="font-semibold text-rose-600">Không thể đọc ./keywords.json</div>
+                <div>{error}</div>
+                <div>Hãy kiểm tra tên tệp, bật server tĩnh, hoặc dùng nút <b>Import keywords.json</b> ở cột trái.</div>
+              </Card>
+            )}
+
+            {filteredGroups.map(g => {
+              const set = selections[g.key] || new Set<string>();
+              const allChecked = set.size>0 && set.size===g.items.length;
+              const someChecked = set.size>0 && set.size<g.items.length;
+              return (
+                <GroupBlock key={g.key} title={`${g.title} ${set.size?`(${set.size})`:""}`} defaultOpen={set.size>0}
+                  right={
+                    <div className="flex items-center gap-2">
+                      {someChecked && <Badge>partial</Badge>}
+                      <label className="flex items-center gap-2 text-sm">
+                        <span>Chọn cả nhóm</span>
+                        <Checkbox checked={allChecked} onChange={(v)=>{
+                          setSelections(prev=>{
+                            const copy: SelectionMap = { ...prev };
+                            const s = ensureSet(copy, g.key);
+                            if (v){ g.items.forEach(it=>s.add(it)); } else { s.clear(); }
+                            return { ...copy };
+                          })
+                        }} />
+                      </label>
+                    </div>
+                  }
+                >
+                  <ItemsGrid items={g.items} groupKey={g.key} selections={selections} onToggle={toggleItem} />
+                </GroupBlock>
+              )
+            })}
+
+            {filteredGroups.length===0 && (
+              <Card className="p-6 text-center text-zinc-500">Không có nhóm nào phù hợp với tìm kiếm hoặc bộ lọc hiện tại.</Card>
+            )}
+          </div>
+        </div>
+
+        <footer className="mt-10 text-center text-xs text-zinc-500">
+          <div>Made with ❤️ – Hỗ trợ JSON lồng sâu, hoạt động offline (sau khi tải).</div>
+        </footer>
+      </div>
+    </div>
+  );
+}
