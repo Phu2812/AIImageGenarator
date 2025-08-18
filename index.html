@@ -173,12 +173,16 @@
         fetch("./keywords.json", { cache: "no-store" })
           .then(response => {
             if (!response.ok) throw new Error(`Failed to load keywords.json (${response.status})`);
-            return response.json();
+            return response.text(); // Get raw text for debugging
+          })
+          .then(text => {
+            console.log("Raw JSON content:", text); // Debug log
+            return JSON.parse(text);
           })
           .then(data => setRaw(data))
           .catch(err => {
             console.warn("Could not load keywords.json, falling back to sample data:", err.message);
-            setRaw(SAMPLE_JSON); // Fallback to SAMPLE_JSON nếu lỗi
+            setRaw(SAMPLE_JSON);
             setError(err.message);
           });
       }, []);
