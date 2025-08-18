@@ -15,7 +15,7 @@
     const { useState, useEffect, useMemo } = React;
     const { createRoot } = ReactDOM;
 
-    // Dữ liệu JSON mẫu (có thể thay thế)
+    // Dữ liệu JSON mẫu (fallback nếu không tải được keywords.json)
     const SAMPLE_JSON = {
       "category": {
         "subCategory1": ["value1", "value2"],
@@ -157,7 +157,7 @@
 
     // Main App
     const App = () => {
-      const [raw, setRaw] = useState(SAMPLE_JSON);
+      const [raw, setRaw] = useState(null);
       const [error, setError] = useState(null);
       const [query, setQuery] = useState("");
       const [joiner, setJoiner] = useState(DEFAULT_JOINER);
@@ -167,6 +167,21 @@
         const saved = localStorage.getItem("kp_selections");
         return saved ? Object.fromEntries(Object.entries(JSON.parse(saved)).map(([k, arr]) => [k, new Set(arr)])) : {};
       });
+
+      // Tải keywords.json từ repository
+      useEffect(() => {
+        fetch("./keywords.json", { cache: "no-store" })
+          .then(response => {
+            if (!response.ok) throw new Error(`Failed to load keywords.json (${response.status})`);
+            return response.json();
+          })
+          .then(data => setRaw(data))
+          .catch(err => {
+            console.warn("Could not load keywords.json, falling back to sample data:", err.message);
+            setRaw(SAMPLE_JSON); // Fallback to SAMPLE_JSON nếu lỗi
+            setError(err.message);
+          });
+      }, []);
 
       useEffect(() => {
         const json = Object.fromEntries(Object.entries(selections).map(([k, s]) => [k, Array.from(s)]));
@@ -301,7 +316,8 @@
           <div className="max-w-7xl mx-auto px-4 py-6 md:py-10">
             <header className="flex flex-wrap items-center gap-4 mb-6">
               <h1 className="text-2xl md:text-3xl font-bold">Keyword Prompt Builder</h1>
-              <Badge>Using embedded JSON</Badge>
+              <Badge>Loaded from keywords.json</Badge>
+              {error && <span className="text-rose-600">(Fallback to sample data: {error})</span>}
               <div className="ml-auto flex items-center gap-2">
                 <input
                   placeholder="Search groups/keywords..."
